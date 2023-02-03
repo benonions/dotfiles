@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+
+# Here we refer to the wiki of yabai. The specific steps are described below
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+
+# Window layout bsp: tile float: float
+yabai -m config layout                       bsp
+# Default split rule first_child second_child
+yabai -m config window_placement             second_child
+# Window spacing settings
+yabai -m config top_padding                  5
+yabai -m config bottom_padding               5
+yabai -m config left_padding                 5
+yabai -m config right_padding                5
+yabai -m config window_gap                   4
+# Auto balance all windows always occupy the same space
+yabai -m config auto_balance                 off
+# If auto balancing is disabled, this property defines the amount of space occupied by the new window. 0.5 means that the old window occupies 50%
+yabai -m config split_ratio                 0.50
+# The mouse modifier button means that you can use the mouse to modify the window size alone by pressing this button
+yabai -m config mouse_modifier               fn
+# fn + left key movement
+yabai -m config mouse_action1                move
+# fn + right click 
+yabai -m config mouse_action2                resize
+# Focus follow mouse default off: turn off autoraise: Auto Lift autofocus: Auto Focus
+yabai -m config focus_follows_mouse          autofocus
+# Sets whether the mouse follows the current active window. The default is off: off: on: on
+yabai -m config mouse_follows_focus          on
+
+# Floating window problem at the top
+yabai -m config window_topmost               on
+# Modify window shadow on: open off: close float: only show the shadow of floating window
+yabai -m config window_shadow                float
+
+# Window transparency settings
+yabai -m config window_opacity               on
+# Configure the opacity of the active window
+yabai -m config active_window_opacity        1.0             
+yabai -m config normal_window_opacity        0.9
+yabai -m config window_opacity_duration      0.0
+
+# Add 20 padding at the top and 0 padding at the bottom of each space on the main display
+# yabai -m config external_bar main:20:0
+# Add a 0 fill at the top and a 0 fill at the bottom of each space on all displays
+yabai -m config external_bar all:0:5
+
+# ================================Rules================================
+# Turn on System Preferences without using tile mode
+yabai -m rule --add app="^System Preferences $" manage=off
+yabai -m rule --add app="^Reminders $" manage=off
+yabai -m rule --add app="^About this machine $" manage=off
+
+echo "yabai configuration loaded.."
