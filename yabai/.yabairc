@@ -1,56 +1,89 @@
-#!/usr/bin/env sh
+#export external_bar_height="47"
+export external_bar_position="top"
+export shadow_toggle="off"
+export mouse_mod="ctrl"
+export border_toggle="off"
+export border_width="2"
+export border_radius="11"
+export opacity_toggle="off"
+export layout="bsp"
+export gap_width="17"
+export animation_duration="0"
+export autoraise_toggle="on"
 
-
-# Here we refer to the wiki of yabai. The specific steps are described below
 sudo yabai --load-sa
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
-# Window layout bsp: tile float: float
-yabai -m config layout                       bsp
-# Default split rule first_child second_child
-yabai -m config window_placement             second_child
-# Window spacing settings
-yabai -m config top_padding                  5
-yabai -m config bottom_padding               5
-yabai -m config left_padding                 5
-yabai -m config right_padding                5
-yabai -m config window_gap                   4
-# Auto balance all windows always occupy the same space
-yabai -m config auto_balance                 off
-# If auto balancing is disabled, this property defines the amount of space occupied by the new window. 0.5 means that the old window occupies 50%
-yabai -m config split_ratio                 0.50
-# The mouse modifier button means that you can use the mouse to modify the window size alone by pressing this button
-yabai -m config mouse_modifier               fn
-# fn + left key movement
-yabai -m config mouse_action1                move
-# fn + right click 
-yabai -m config mouse_action2                resize
-# Focus follow mouse default off: turn off autoraise: Auto Lift autofocus: Auto Focus
-yabai -m config focus_follows_mouse          autofocus
-# Sets whether the mouse follows the current active window. The default is off: off: on: on
-yabai -m config mouse_follows_focus          on
+if [[ $autoraise_toggle == "on" ]]; then
+   yabai -m config focus_follows_mouse autoraise
+fi
 
-# Floating window problem at the top
-yabai -m config window_topmost               on
-# Modify window shadow on: open off: close float: only show the shadow of floating window
-yabai -m config window_shadow                float
+yabai -m config window_shadow $shadow_toggle
+yabai -m config mouse_modifier $mouse_mod
+yabai -m config layout $layout
+yabai -m config window_animation_duration $animation_duration
+yabai -m config window_border_radius $border_radius
 
-# Window transparency settings
-yabai -m config window_opacity               on
-# Configure the opacity of the active window
-yabai -m config active_window_opacity        1.0             
-yabai -m config normal_window_opacity        0.9
-yabai -m config window_opacity_duration      0.0
+yabai -m config window_opacity             $opacity_toggle
+yabai -m config window_opacity_duration    0.2
+yabai -m config active_window_opacity      1.0
+yabai -m config normal_window_opacity      0.9
 
-# Add 20 padding at the top and 0 padding at the bottom of each space on the main display
-# yabai -m config external_bar main:20:0
-# Add a 0 fill at the top and a 0 fill at the bottom of each space on all displays
-yabai -m config external_bar all:0:5
+### Confgure mouse usage ###
+yabai -m config mouse_action1              move   # with left click - resize
+yabai -m config mouse_action2              resize     # with right click - move
 
-# ================================Rules================================
-# Turn on System Preferences without using tile mode
-yabai -m rule --add app="^System Preferences $" manage=off
-yabai -m rule --add app="^Reminders $" manage=off
-yabai -m rule --add app="^About this machine $" manage=off
+yabai -m config window_border $border_toggle
+yabai -m config window_border_width $border_width
+yabai -m config active_window_border_color 0xFF6faec0
+yabai -m config normal_window_border_color 0xFF3e4050
+
+if [[ $external_bar_position == "top" ]]; then
+   yabai -m config top_padding                30
+   yabai -m config bottom_padding             20
+   yabai -m config left_padding               10
+   yabai -m config right_padding              10
+   yabai -m config window_gap                 8
+
+fi
+if [[ $external_bar_position == "bottom" ]]; then
+   yabai -m config top_padding                $gap_width
+   yabai -m config bottom_padding             $(expr $gap_width + $external_bar_height)
+   yabai -m config left_padding               $gap_width
+   yabai -m config right_padding              $gap_width
+   yabai -m config window_gap                 $gap_width
+
+fi
+if [[ $external_bar_position == "left" ]]; then
+   yabai -m config top_padding                $gap_width
+   yabai -m config bottom_padding             $gap_width
+   yabai -m config left_padding               $(expr $gap_width + $external_bar_height)
+   yabai -m config right_padding              $gap_width
+   yabai -m config window_gap                 $gap_width
+
+fi
+if [[ $external_bar_position == "right" ]]; then
+   yabai -m config top_padding                $gap_width
+   yabai -m config bottom_padding             $gap_width
+   yabai -m config left_padding              $gap_width
+   yabai -m config right_padding              $(expr $gap_width + $external_bar_height)
+   yabai -m config window_gap                 $gap_width
+
+fi
+
+yabai -m rule --add app="^(Calculator|System Settings|ColorSlurp|zoom.us|Photo Booth|Archive Utility|Color Picker|balenaEtcher)$" manage=off
+yabai -m rule --add app="^(XQuartz)$" layer=above manage=off
+
+yabai -m space 1 --label Code
+yabai -m space 2 --label Text
+yabai -m space 3 --label Web
+yabai -m space 4 --label Idle
+yabai -m space 5 --label Misc
+yabai -m space 6 --label doc
+yabai -m space 7 --label help
+yabai -m space 8 --label music
+
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+yabai -m signal --add event=window_title_changed action="sketchybar --trigger title_change"
 
 echo "yabai configuration loaded.."
