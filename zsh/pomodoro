@@ -14,5 +14,5 @@ pomodoro () {
   fi
 }
 
-alias wo="pomodoro 'work'"
-alias br="pomodoro 'break'"
+alias pom="pomodoro 'work'"
+alias mop="pomodoro 'break'"

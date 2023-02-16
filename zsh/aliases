@@ -21,3 +21,6 @@ alias ls="exa"
 
 # install/sync nix packages with home-manager
 alias hms="home-manager switch"
+
+#zellij
+alias zj="zellij"

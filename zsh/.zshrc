@@ -15,3 +15,7 @@ eval "$(starship init zsh)" # using starship for prompt
 
 export PATH="${PATH}:${HOME}/.krew/bin"
 source /Users/ben/.config/broot/launcher/bash/br
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$HOME/.rd/bin
+
