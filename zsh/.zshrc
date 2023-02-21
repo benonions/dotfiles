@@ -6,7 +6,7 @@ export DOTFILES="$HOME/.dotfiles"
 export EDITOR="nvim"
 
   #import aliases
-. $DOTFILES/zsh/aliases
+. $DOTFILES/zsh/aliases.sh
   #import pomodoro
 . $DOTFILES/zsh/pomodoro
 
@@ -18,4 +18,5 @@ source /Users/ben/.config/broot/launcher/bash/br
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$HOME/.rd/bin
+export PATH=$PATH:"$HOME/.local/bin":$PATH
 

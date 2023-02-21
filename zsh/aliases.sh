@@ -1,3 +1,6 @@
+#reload zshrc
+alias zsrc="source ~/.zshrc"
+
 # perform "git pull" for all directories under the CWD
 alias git_pull_all="ls | xargs -P10 -I{} git -C {} pull"
 
@@ -24,3 +27,6 @@ alias hms="home-manager switch"
 
 #zellij
 alias zj="zellij"
+
+#nerdctl 
+alias wabbit="nerdctl run -p 15672:15672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
