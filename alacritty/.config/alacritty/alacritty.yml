@@ -25,7 +25,7 @@ import:
 
 window:
    decorations: buttonless
-   opacity: 0.7
+   opacity: 0.9
 
   # Startup Mode (changes require restart)
   #

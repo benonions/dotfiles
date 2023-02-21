@@ -1,0 +1,13 @@
+// layout_file.kdl
+
+layout {
+    pane split_direction="vertical" {
+        pane {
+            command "hx"
+        }
+        pane {
+           command "lazygit" 
+        } 
+    }
+}
+

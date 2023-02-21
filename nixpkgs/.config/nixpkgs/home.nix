@@ -14,6 +14,8 @@
 
         #languages
         pkgs.go #GO!
+        pkgs.gopls
+        pkgs.delve
         pkgs.nodejs-18_x #node
         pkgs.rustup
 
