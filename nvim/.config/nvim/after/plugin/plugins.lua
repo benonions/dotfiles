@@ -12,7 +12,7 @@ vim.cmd([[
 
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
-  use { 'folke/tokyonight.nvim', as = 'tokyonight' }
+  use { 'richin13/dracula.nvim', as = 'dracula' }
 
   --Treesitter
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
@@ -58,6 +58,13 @@ return require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'neovim/nvim-lspconfig'
+  use { 'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp' }
+
+  require 'cmp'.setup {
+    sources = {
+      { name = 'cmp_tabnine' }
+    }
+  }
 
   -- LSP Saga ????
   use({
@@ -128,6 +135,8 @@ return require('packer').startup(function(use)
   use 'maxmellon/vim-jsx-pretty' --JS and JSX syntax
   use 'jparise/vim-graphql' --GraphQL syntax
   use 'mattn/emmet-vim'
+
+  
 
   -- le duck
   use 'tamton-aquib/duck.nvim'
