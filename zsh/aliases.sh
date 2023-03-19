@@ -30,3 +30,5 @@ alias zj="zellij"
 
 #nerdctl 
 alias wabbit="nerdctl run -p 15672:15672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
+
+alias nvim="lvim"
