@@ -1,71 +1,73 @@
-{ config, pkgs, ... }:
+{ config, pkgs, ... }: {
 
-{
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "ben";
-  home.homeDirectory = "/home/ben";
+  home =
+    {
+      username = "ben";
+      homeDirectory = "/home/ben";
+      stateVersion = "22.05";
 
-  home.packages = [
-		#kubernetes
-        pkgs.k9s #a very good boy
-        pkgs.kubectl #kube cuddle
-        pkgs.krew #package manager for kubectl plugins
+      packages = with pkgs; [
+        #kubernetes
+        k9s
+        kubectl
+        pkgs.krew
 
         #languages
-        pkgs.go #GO!
-        pkgs.gopls
-        pkgs.delve
-        pkgs.nodejs-18_x #node
-        pkgs.rustup
+        go
+        gopls
+        delve
+        nodejs-18_x
+        rustup
 
         # development tools
-        pkgs.lazygit # a nice git TUI
-        pkgs.docker
-        pkgs.colima
-        pkgs.doctl # digital ocean cli
-        pkgs.gh #github cli
-        pkgs.helix
-        pkgs.neovim
-        pkgs.alacritty
+        lazygit
+        docker
+        doctl
+        gh
+        helix
+        neovim
+        alacritty
 
         # charm.sh tools
-        pkgs.gum
-        pkgs.glow
-        pkgs.skate
-        pkgs.soft-serve
+        gum
+        glow
+        skate
+        soft-serve
 
         # general tools
-        pkgs.tmux
-        pkgs.starship #multi-shell customizable prompt
-        pkgs.exa #more modern 'ls'
-        pkgs.ripgrep #more modern 'grep'
-        pkgs.fzf # nifty fuzzy finder
-        pkgs.btop #better than top, better than htop
-        pkgs.stow # dotfile manager
-        pkgs.rclone
-        pkgs.broot
-        pkgs.zellij
+        tmux
+        starship
+        exa
+        ripgrep
+        fzf
+        btop
+        stow
+        rclone
 
         #fun
-        pkgs.thefuck # type 'fuck' after making a typo on a shell command.
-        pkgs.spotifyd #spotify daemon, needed for spotify TUI
-        pkgs.spotify-tui #run spotify in the terminal, I only use this on Arch, not macOS
-        pkgs.element-desktop
-        pkgs.lolcat
-  ];
+        thefuck # type 'fuck' after making a typo on a shell command.
+        spotifyd #spotify daemon, needed for spotify TUI
+        spotify-tui #run spotify in the terminal, I only use this on Arch, not macOS
+        lolcat
+      ];
+    };
+
+  # programs that we will manage the configuration for
+  programs = {
+    home-manager.enable = true;
+
+    # bat, a cat clone with wings
+    bat = {
+      enable = true;
+      config = {
+        theme = "Dracula";
+        italic-text = "always";
+      };
+    };
+
+  };
 
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "22.05";
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }
+
