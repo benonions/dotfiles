@@ -20,7 +20,7 @@ alias kdd="kubectl describe deployment"
 alias stern="kubectl stern"
 
 # exa, a modern replacement for 'ls'
-alias ls="exa"
+#alias ls="exa"
 
 # install/sync nix packages with home-manager
 alias hms="home-manager switch"
@@ -29,6 +29,7 @@ alias hms="home-manager switch"
 alias zj="zellij"
 
 #nerdctl 
-alias wabbit="nerdctl run -p 15672:15672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
+alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
 
 alias nvim="lvim"
+alias ls=exa
