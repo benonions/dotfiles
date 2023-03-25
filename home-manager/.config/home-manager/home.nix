@@ -13,11 +13,11 @@
         pkgs.krew
 
         #languages
-        go
         gopls
         delve
         nodejs-18_x
         rustup
+        go
 
         # development tools
         lazygit
@@ -43,6 +43,8 @@
         btop
         stow
         rclone
+        ranger
+        zoxide
 
         #fun
         thefuck # type 'fuck' after making a typo on a shell command.
