@@ -9,7 +9,7 @@ compinit
 source <(kubectl completion zsh)
 
 export DOTFILES="$HOME/.dotfiles"
-export EDITOR="nvim"
+export EDITOR="lvim"
 
   #import aliases
 . $DOTFILES/zsh/aliases.sh
@@ -66,3 +66,5 @@ n ()
 fh() {
   print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
 }
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
