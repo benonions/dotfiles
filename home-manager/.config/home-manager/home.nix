@@ -45,6 +45,7 @@
         rclone
         ranger
         zoxide
+        ansible
 
         #fun
         thefuck # type 'fuck' after making a typo on a shell command.
