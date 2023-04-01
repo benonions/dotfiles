@@ -29,6 +29,7 @@ alias hms="home-manager switch"
 alias zj="zellij"
 
 #nerdctl 
+alias fixrd="sudo ln -s ~$USER/.rd/docker.sock /var/run/docker.sock"
 alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
 
 alias nvim="lvim"
