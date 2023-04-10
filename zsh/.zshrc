@@ -10,6 +10,7 @@ source <(kubectl completion zsh)
 
 export DOTFILES="$HOME/.dotfiles"
 export EDITOR="lvim"
+export SOPS_AGE_KEY_FILE=$HOME/.sops/key.txt
 
   #import aliases
 . $DOTFILES/zsh/aliases.sh
@@ -68,3 +69,4 @@ fh() {
 }
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
