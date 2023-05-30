@@ -25,7 +25,6 @@
         doctl
         gh
         helix
-        neovim
         alacritty
 
         # charm.sh tools
@@ -46,6 +45,7 @@
         ranger
         zoxide
         ansible
+        fd
 
         #fun
         thefuck # type 'fuck' after making a typo on a shell command.
