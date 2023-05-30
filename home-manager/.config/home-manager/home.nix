@@ -34,7 +34,6 @@
         soft-serve
 
         # general tools
-        tmux
         starship
         exa
         ripgrep
