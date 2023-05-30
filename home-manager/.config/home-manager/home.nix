@@ -25,7 +25,6 @@
         doctl
         gh
         helix
-        alacritty
 
         # charm.sh tools
         gum
