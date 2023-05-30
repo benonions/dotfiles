@@ -34,6 +34,3 @@ alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbi
 
 alias ls=exa -l
 
-alias cursed-cloner="~/.dotfiles/scripts/cursed_cloner.sh"
-alias blursed-bug-finder="~/.dotfiles/scripts/blursed-bug-chaser.sh"
-alias conventional-commit="~/.dotfiles/scripts/conventional_commits.sh"
