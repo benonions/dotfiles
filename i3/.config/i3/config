@@ -65,7 +65,7 @@ bindsym $mod+Shift+0    move container to workspace  $ws10
 ######################################
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec /usr/bin/alacritty
 
 # kill focused window
 bindsym $mod+q kill
@@ -189,7 +189,7 @@ for_window [class=(?i)firefox] focus
 # compositor #
 ##############
 
-exec_always --no-startup-id picom --config  ~/.config/picom.conf
+exec_always --no-startup-id picom
 
 #############################################
 # autostart applications/services on login: #
