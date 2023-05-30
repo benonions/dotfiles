@@ -30,7 +30,7 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$HOME/.rd/bin
 export PATH=$PATH:"$HOME/.local/bin":$PATH
-export TERM=xterm-256color
+export TERM=screen-256color
 
 n ()
 {
