@@ -98,8 +98,11 @@ shift + cmd - 9 : yabai -m window --space  9; yabai -m space --focus 9
 
 # ================================ APPS ================================
 # iTerm2
-cmd - return : open -a iTerm
-
+alt - return : open -a alacritty
+alt - w : open -a /Applications/Google\ Chrome.app
+alt -f : open -a /Applications/Firefox.app 
+alt - s : open -a /Applications/Slack.app
+alt -m : open -a /Applications/Spotify.app
 # ================================Multi display configuration================================
 # focus monitora : 
 # ctrl + alt - z  : yabai -m display --focus prev
