@@ -18,6 +18,7 @@ if [[ $autoraise_toggle == "on" ]]; then
    yabai -m config focus_follows_mouse autoraise
 fi
 
+yabai -m config mouse_follows_focus on
 yabai -m config window_shadow $shadow_toggle
 yabai -m config mouse_modifier $mouse_mod
 yabai -m config layout $layout

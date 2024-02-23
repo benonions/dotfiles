@@ -36,6 +36,11 @@ return {
             },
           },
         },
+        pickers = {
+          find_files = {
+            find_command = { 'rg', '--ignore', '--hidden', '--files', '--glob', '!.git/*', },
+          },
+        },
       }
     end
   },
