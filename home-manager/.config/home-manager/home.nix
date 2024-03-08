@@ -3,7 +3,7 @@
   home =
     {
       username = "ben";
-      homeDirectory = "/home/ben";
+      homeDirectory = "/Users/ben";
       stateVersion = "22.05";
 
       packages = with pkgs; [
@@ -13,18 +13,20 @@
         pkgs.krew
 
         #languages
-        gopls
-        delve
-        nodejs-18_x
+        # gopls
+        # delve
         rustup
-        go
-
+        # go
+        tmux
+        elixir
+        mysql80
         # development tools
         lazygit
         docker
         doctl
         gh
         helix
+        git-lfs
 
         # charm.sh tools
         gum
@@ -34,22 +36,28 @@
 
         # general tools
         starship
-        exa
         ripgrep
         fzf
         btop
         stow
-        rclone
         ranger
         zoxide
         ansible
         fd
+        zellij
+        eza
+        lf
+        nnn
+        parallel
 
         #fun
         thefuck # type 'fuck' after making a typo on a shell command.
         spotifyd #spotify daemon, needed for spotify TUI
         spotify-tui #run spotify in the terminal, I only use this on Arch, not macOS
         lolcat
+        taskwarrior-tui
+        postgresql
+        hexyl
       ];
     };
 

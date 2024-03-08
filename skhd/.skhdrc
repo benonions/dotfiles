@@ -80,6 +80,7 @@ alt - 6 : yabai -m space --focus 6
 alt - 7 : yabai -m space --focus 7
 alt - 8 : yabai -m space --focus 8
 alt - 9 : yabai -m space --focus 9
+alt - 0 : yabai -m space --focus 10
 
 # Close the current desktop
 cmd + alt - w : yabai -m space --destroy
@@ -98,11 +99,12 @@ shift + cmd - 9 : yabai -m window --space  9; yabai -m space --focus 9
 
 # ================================ APPS ================================
 # iTerm2
-alt - return : open -a alacritty
+alt - return : open -a wezterm
 alt - w : open -a /Applications/Google\ Chrome.app
 alt -f : open -a /Applications/Firefox.app 
 alt - s : open -a /Applications/Slack.app
 alt -m : open -a /Applications/Spotify.app
+alt - l : open -a /Applications/Logseq.app
 # ================================Multi display configuration================================
 # focus monitora : 
 # ctrl + alt - z  : yabai -m display --focus prev

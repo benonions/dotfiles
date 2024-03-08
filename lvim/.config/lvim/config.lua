@@ -19,12 +19,23 @@ lvim.builtin.which_key.mappings["t"] = {
   r = { "<cmd>TroubleToggle lsp_references<cr>", "references" },
 }
 
-lvim.builtin.which_key.mappings["n"] = {
-  name = "Neorg",
-  i = { "<cmd>Neorg index<cr>", "index" },
-  j = { "<cmd>Neorg journal<cr>", "journal" },
-  t = { "<cmd>Neorg journal today<cr>", "today" },
+lvim.builtin.which_key.mappings["lss"] = {
+  "<cmd>SymbolsOutline<cr>", "SymbolsOutline"
 }
+
+lvim.builtin.which_key.mappings["r"] = {
+  name = "refactoring",
+  p = { name = "print function" },
+  v = { name = "print var" },
+  c = { name = "cleanup " },
+}
+
+lvim.keys.normal_mode["<leader>rp"] = ":lua require'refactoring'.debug.printf()<CR>"
+lvim.keys.normal_mode["<leader>rv"] = ":lua require'refactoring'.debug.print_var()<CR>"
+lvim.keys.normal_mode["<leader>rc"] = ":lua require'refactoring'.debug.cleanup()<CR>"
+
+lvim.keys.normal_mode["<leader>m"] = { ":Telescope marks<CR>" }
+lvim.keys.normal_mode["<leader>mr"] = { ":Telescope marks<CR>" }
 
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
@@ -59,6 +70,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "bash",
   "c",
   "javascript",
+  "go",
   "json",
   "lua",
   "python",
@@ -69,7 +81,12 @@ lvim.builtin.treesitter.ensure_installed = {
   "java",
   "yaml",
   "org",
+  "nix",
 }
+
+
+
+lvim.lsp.setup_servers = ({ 'dartls', force = true })
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
@@ -77,51 +94,62 @@ lvim.builtin.treesitter.highlight.enable = true
 
 lvim.builtin.dap.active = true
 local dap = require("dap")
-dap.adapters.go = {
+dap.adapters.delve = {
   type = "server",
-  port = 2345,
-}
-
--- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
-dap.configurations.go = {
-  {
-    type = "go",
-    name = "delve devspace debug",
-    request = "attach",
-    mode = "remote",
-    substitutepath = { {
-      from = "${workspaceFolder}",
-      to = "/app"
-    } }
+  port = '${port}',
+  executable = {
+    command = 'dlv',
+    args = { 'dap', '-l', '127.0.0.1:${port}' },
   }
 }
 
--- lvim.lang.terraform.formatters = { { exe = 'terraform_fmt' } }
+-- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+-- dap.configurations.go = {
+--   {
+--     type = "go",
+--     name = "delve devspace debug",
+--     request = "attach",
+--     mode = "remote",
+--     substitutepath = { {
+--       from = "${workspaceFolder}",
+--       to = "/app"
+--     } }
+--   }
+-- }
+--
+dap.configurations.go = {
+  {
+    type = "delve",
+    name = "Debug",
+    request = "launch",
+    program = "${file}",
+  },
+  {
+    type = "go",
+    name = "Debug test", -- configuration for debugging test files
+    request = "launch",
+    mode = "test",
+    program = "${file}",
+  },
+  -- works with go.mod packages and sub packages
+  {
+    type = "go",
+    name = "Debug test (go.mod)",
+    request = "launch",
+    mode = "test",
+    program = "./${relativeFileDirname}",
+  },
+}
 
+-- lvim.lang.terraform.formatters = { { exe = 'terraform_fmt' } }
+require("lvim.lsp.manager").setup("marksman")
+require("lvim.lsp.manager").setup("rnix")
 
 -- Additional Plugins
 lvim.plugins = {
-  -- {
-  --   'codota/tabnine-nvim',
-  --   build = "./dl_binaries.sh",
-  --   require('tabnine').setup({
-  --     disable_auto_comment = false,
-  --     accept_keymap = "<Tab>",
-  --     dismiss_keymap = "<C-]>",
-  --     debounce_ms = 800,
-  --     suggestion_color = { gui = "#808080", cterm = 244 },
-  --     exclude_filetypes = { "TelescopePrompt" }
-  --   })
-  -- },
   {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
-  },
-  {
-    "miversen33/netman.nvim",
-    config = function()
-      require("netman")
-    end,
   },
   {
     "folke/todo-comments.nvim",
@@ -163,40 +191,80 @@ lvim.plugins = {
     "folke/zen-mode.nvim"
   },
   {
-    "nvim-neorg/neorg",
-    build = ":Neor sync-parsers",
-    opts = {
-      load = {
-        ["core.defaults"] = {},  -- Loads default behaviour
-        ["core.concealer"] = {}, -- Adds pretty icons to your documents
-        ["core.itero"] = {},
-        ["core.dirman"] = {      -- Manages Neorg workspaces
-          config = {
-            workspaces = {
-              notes = "~/notes"
-            },
-            default_workspace = "notes"
-          }
-        },
-        ["core.export"] = {},
-        ["core.export.markdown"] = {},
-        ["core.presenter"] = {
-          config = {
-            zen_mode = "zen-mode"
-          }
-        },
-        ["core.summary"] = {},
-        ["core.qol.todo_items"] = {
-          config = {
-            create_todo_items = true,
-            create_todo_parents = true,
-            order = "undone",
-            order_with_children = "undone",
-          }
-        },
-        ["core.integrations.telescope"] = {},
-      }
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
-    dependencies = { { "nvim-lua/plenary.nvim" }, { "nvim-neorg/neorg-telescope" } },
+    config = function()
+      require('refactoring').setup({
+        prompt_func_return_type = {
+          go = false,
+          java = false,
+
+          cpp = false,
+          c = false,
+          h = false,
+          hpp = false,
+          cxx = false,
+        },
+        prompt_func_param_type = {
+          go = false,
+          java = false,
+
+          cpp = false,
+          c = false,
+          h = false,
+          hpp = false,
+          cxx = false,
+        },
+        printf_statements = {
+          go = { 'log.Debug().Str("routine", "%s").Msg("entered function")' }
+        },
+        print_var_statements = {
+          go = { 'log.Debug().Msgf("%s: %%v", %s)' },
+        },
+      })
+    end
+  },
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      vim.g.gitblame_enabled = 0
+    end,
+  },
+  { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
+  {
+    "klen/nvim-test",
+    config = function()
+      require('nvim-test').setup()
+    end
+  },
+  {
+    'RaafatTurki/hex.nvim',
+    config = function()
+      require 'hex'.setup {
+
+        -- cli command used to dump hex data
+        dump_cmd = 'xxd -g 1 -u',
+
+        -- cli command used to assemble from hex data
+        assemble_cmd = 'xxd -r',
+
+        -- function that runs on BufReadPre to determine if it's binary or not
+        is_buf_binary_pre_read = function()
+          -- logic that determines if a buffer contains binary data or not
+          -- must return a bool
+        end,
+
+        -- function that runs on BufReadPost to determine if it's binary or not
+        is_buf_binary_post_read = function()
+          -- logic that determines if a buffer contains binary data or not
+          -- must return a bool
+        end,
+      }
+    end
   }
 }
