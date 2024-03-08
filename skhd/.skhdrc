@@ -99,7 +99,7 @@ shift + cmd - 9 : yabai -m window --space  9; yabai -m space --focus 9
 
 # ================================ APPS ================================
 # iTerm2
-alt - return : open -a alacritty
+alt - return : open -a wezterm
 alt - w : open -a /Applications/Google\ Chrome.app
 alt -f : open -a /Applications/Firefox.app 
 alt - s : open -a /Applications/Slack.app
