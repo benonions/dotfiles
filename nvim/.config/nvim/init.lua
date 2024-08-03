@@ -3,7 +3,7 @@
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
+vim.opt_local.conceallevel = 2
 local snippets_folder = vim.fn.stdpath "config" .. "/lua/config/snip/snippets/"
 
 -- Install package manager
@@ -31,6 +31,15 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { import = 'custom.plugins' },
 })
+
+-- require('obsidian').setup {
+--   workspaces = {
+--     {
+--       name = "work",
+--       path = "~/vaults/work",
+--     },
+--   },
+-- }
 
 -- set vim opts
 require('custom.options')
@@ -153,6 +162,7 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`

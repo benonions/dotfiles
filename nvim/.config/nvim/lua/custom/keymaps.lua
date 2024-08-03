@@ -1,45 +1,78 @@
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 -- document existing key chains
-require('which-key').register {
-  ['<leader>l'] = { name = 'lsp', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['leader>d'] = { name = 'debug', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-  ['<leader>e'] = { name = 'Neotree', _ = 'which_key_ignore' },
-  ['<leader>r'] = {
-    name = "refactoring", -- group name
-    r = { "<cmd>lua require('telescope').extensions.refactoring.refactors()<CR>", "Select refactor" },
-    lf = { "<cmd>lua require('refactoring').debug.printf({ below = false })<CR>", "Print" },
-    lv = { "<cmd>lua require('refactoring').debug.print_var()<CR>", "Print Variable" },
-    lc = { "<cmd>lua require('refactoring').debug.cleanup({})<CR>", "Print Cleanup" },
-  },
-  ['<leader>h'] = {
-    name = "harpoon",
-    a = { "<cmd>lua require('harpoon.mark').add_file()<cr>", "add file" },
-    r = { "<cmd>lua require('harpoon.mark').rm_file()<cr>", "remove file" },
-    m = { "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", "harpoon menu" },
-    n = { "<cmd>lua require('harpoon.ui').nav_next()<cr>", "next file" },
-    p = { "<cmd>lua require('harpoon.ui').nav_prev()<cr>", "previous file" },
-    ["1"] = { "<cmd> lua require('harpoon.ui').nav_file(1)<cr>", "file 1" },
-    ["2"] = { "<cmd> lua require('harpoon.ui').nav_file(2)<cr>", "file 2" },
-    ["3"] = { "<cmd> lua require('harpoon.ui').nav_file(3)<cr>", "file 3" },
-  },
-  ['<leader>H'] = {
-    name = "help/debug/conceal",
-    c = {
-      name = "conceal",
-      h = { ":set conceallevel=1<cr>", "hide/conceal" },
-      s = { ":set conceallevel=0<cr>", "show/unconceal" },
-    },
-    t = {
-      name = "treesitter",
-      t = { vim.treesitter.inspect_tree, "show tree" },
-      c = { ":=vim.treesitter.get_captures_at_cursor()<cr>", "show capture" },
-      n = { ":=vim.treesitter.get_node():type()<cr>", "show node" },
-    },
-  },
+-- require('which-key').register {
+--   -- ['<leader>l'] = { name = 'lsp', _ = 'which_key_ignore' },      -- group
+--   --
+--   -- ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },    -- group
+--   -- ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' }, --
+--   -- ['leader>d'] = { name = 'debug', _ = 'which_key_ignore' },
+--   -- ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+--   -- ['<leader>e'] = { name = 'Neotree', _ = 'which_key_ignore' },
+--   -- ['<leader>r'] = {
+--   --   name = "refactoring", -- group name
+--   --   r = { "<cmd>lua require('telescope').extensions.refactoring.refactors()<CR>", "Select refactor" },
+--   --   lf = { "<cmd>lua require('refactoring').debug.printf({ below = false })<CR>", "Print" },
+--   --   lv = { "<cmd>lua require('refactoring').debug.print_var()<CR>", "Print Variable" },
+--   --   lc = { "<cmd>lua require('refactoring').debug.cleanup({})<CR>", "Print Cleanup" },
+--   -- },
+-- }
+
+require('which-key').add {
+  { "<leader>r",   group = "refactoring" },
+  { "<leader>rr",  "<cmd>lua require('telescope').extensions.refactoring.refactors()<CR>", desc = "Select refactor" },
+  { "<leader>rlf", "<cmd>lua require('refactoring').debug.printf({ below = false })<CR>",  desc = "Print" },
+  { "<leader>rlv", "<cmd>lua require('refactoring').debug.print_var()<CR>",                desc = "Print Variable" },
+  { "<leader>rlc", "<cmd>lua require('refactoring').debug.cleanup({})<CR>",                desc = "Print Cleanup" },
+  { "<leader>e",   group = "Neotree" },
+  { "<leader>e_",  hidden = true },
+  { "<leader>g",   group = "[G]it" },
+  { "<leader>g_",  hidden = true },
+  { "<leader>s",   group = "[S]earch" },
+  { "<leader>s_",  hidden = true },
+  { "<leader>w",   group = "[W]orkspace" },
+  { "<leader>w_",  hidden = true },
+  { "leader>d",    group = "debug" },
+  { "leader>d_",   hidden = true },
+}
+
+require('which-key').add {
+  { "<leader>l",  group = "lsp" },
+  { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>",      desc = "code action" },
+  { "<leader>ld", "<cmd>lua vim.lsp.buf.definition()<cr>",       desc = "definition" },
+  { "<leader>lh", "<cmd>lua vim.lsp.buf.hover()<cr>",            desc = "hover" },
+  { "<leader>li", "<cmd>lua vim.lsp.buf.implementation()<cr>",   desc = "implementation" },
+  { "<leader>lr", "<cmd>lua vim.lsp.buf.references()<cr>",       desc = "references" },
+  { "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<cr>",   desc = "signature help" },
+  { "<leader>lt", "<cmd>lua vim.lsp.buf.type_definition()<cr>",  desc = "type definition" },
+  { "<leader>lw", "<cmd>lua vim.lsp.buf.document_symbol()<cr>",  desc = "document symbol" },
+  { "<leader>lW", "<cmd>lua vim.lsp.buf.workspace_symbol()<cr>", desc = "workspace symbol" },
+  { "<leader>lD", "<cmd>lua vim.lsp.buf.declaration()<cr>",      desc = "declaration" },
+  { "<leader>lR", "<cmd>lua vim.lsp.buf.rename()<cr>",           desc = "rename" },
+  { "<leader>lF", "<cmd>lua vim.lsp.buf.formatting()<cr>",       desc = "formatting" },
+}
+
+require('which-key').add {
+  { "<leader>H",   group = "help/debug/conceal" },
+  { "<leader>Hc",  group = "help/debug/conceal" },
+  { "<leader>Hh",  "<cmd>:set conceallevel=1<cr>",                           desc = "hide/conceal" },
+  { "<leader>Hs",  "<cmd>:set conceallevel=0<cr>",                           desc = "show/unconceal" },
+  { "<leader>Ht",  group = "help/debug/conceal" },
+  { "<leader>Htt", "<cmd>:lua vim.treesitter.inspect_tree()<cr>",            desc = "show tree" },
+  { "<leader>Htc", "<cmd>:lua =vim.treesitter.get_captures_at_cursor()<cr>", desc = "show capture" },
+  { "<leader>Htn", "<cmd>:lua =vim.treesitter.get_node():type()<cr>",        desc = "show node" },
+}
+
+require('which-key').add {
+  { "<leader>h",  group = "harpoon" },
+  { "<leader>h1", "<cmd> lua require('harpoon.ui').nav_file(1)<cr>",        desc = "file 1" },
+  { "<leader>h2", "<cmd> lua require('harpoon.ui').nav_file(2)<cr>",        desc = "file 2" },
+  { "<leader>h3", "<cmd> lua require('harpoon.ui').nav_file(3)<cr>",        desc = "file 3" },
+  { "<leader>ha", "<cmd>lua require('harpoon.mark').add_file()<cr>",        desc = "add file" },
+  { "<leader>hm", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", desc = "harpoon menu" },
+  { "<leader>hn", "<cmd>lua require('harpoon.ui').nav_next()<cr>",          desc = "next file" },
+  { "<leader>hp", "<cmd>lua require('harpoon.ui').nav_prev()<cr>",          desc = "previous file" },
+  { "<leader>hr", "<cmd>lua require('harpoon.mark').rm_file()<cr>",         desc = "remove file" },
 }
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })

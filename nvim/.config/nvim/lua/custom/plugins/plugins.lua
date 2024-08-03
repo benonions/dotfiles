@@ -98,17 +98,23 @@ return {
   --     tokyonight.load()
   --   end,
   -- },
+  -- {
+  --   "Mofiqul/dracula.nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     local dracula = require "dracula"
+  --     dracula.setup({
+  --       show_end_of_buffer = true, -- default false
+  --       transparent_bg = true,     -- default false
+  --     })
+  --     vim.cmd [[colorscheme dracula]]
+  --   end,
+  -- },
   {
-    "Mofiqul/dracula.nvim",
-    priority = 1000,
+    'kdheepak/monochrome.nvim',
     config = function()
-      local dracula = require "dracula"
-      dracula.setup({
-        show_end_of_buffer = true, -- default false
-        transparent_bg = true,     -- default false
-      })
-      vim.cmd [[colorscheme dracula]]
-    end,
+      vim.cmd 'colorscheme monochrome'
+    end
   },
   {
     -- Set lualine as statusline

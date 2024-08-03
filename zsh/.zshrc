@@ -10,7 +10,7 @@ source <(kubectl completion zsh)
 export DOTFILES="$HOME/.dotfiles"
 export EDITOR="nvim"
 export SOPS_AGE_KEY_FILE="$HOME/.sops/key.txt"
-
+export ZK_NOTEBOOK_DIR="/Users/ben/Dropbox/MyBrain"
 export PATH="$HOME/.local/bin/:$PATH"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.ansible/scripts/:$PATH"
@@ -115,6 +115,14 @@ ppp() {
   fi
 }
 
+oatmeal-sessions() {
+    (
+        cd "$(oatmeal sessions dir)"
+        id=$(rg --color always -n . | fzf --ansi | awk -F ':' '{print $1}' | head -n1 | awk -F '.' '{print $1}')
+        oatmeal sessions open --id "$id"
+    )
+}
+
 zjgtt() {
   tab=$(zellij action query-tab-names | fzf)
 
@@ -128,6 +136,35 @@ zjgtt() {
 
 mysqueel() {
  mysql -h 127.0.0.1 -P 3306 --protocol=TCP -u root -p
+}
+
+ppatch() {
+kubectl patch deployment tfc-driver-dmv-master --type='merge' -p '{
+  "spec": {
+    "template": {
+      "metadata": {
+        "annotations": {
+          "profiles.grafana.com/cpu.port": "6060",
+          "profiles.grafana.com/cpu.scrape": "true",
+          "profiles.grafana.com/goroutine.port": "6060",
+          "profiles.grafana.com/goroutine.scrape": "true",
+          "profiles.grafana.com/memory.port": "6060",
+          "profiles.grafana.com/memory.scrape": "true",
+          "profiles.grafana.com/mutex.port": "6060",
+          "profiles.grafana.com/mutex.scrape": "true",
+          "profiles.grafana.com/block.port": "6060",
+          "profiles.grafana.com/block.scrape": "true",
+          "profiles.grafana.com/trace.scrape": "true",
+          "profiles.grafana.com/trace.port": "6060"
+        }
+        }
+      }
+    }
+  }'
+}
+
+getCiscoPass() {
+security find-generic-password -s cisco_switch  -w
 }
 
 source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
@@ -144,3 +181,17 @@ export PATH="/Users/ben/.rd/bin:$PATH"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# pnpm
+export PNPM_HOME="/Users/ben/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/ben/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/ben/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/completion.zsh.inc'; fi
