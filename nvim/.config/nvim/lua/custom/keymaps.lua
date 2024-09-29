@@ -75,6 +75,7 @@ require('which-key').add {
   { "<leader>hr", "<cmd>lua require('harpoon.mark').rm_file()<cr>",         desc = "remove file" },
 }
 
+
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }

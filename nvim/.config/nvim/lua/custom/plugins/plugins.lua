@@ -80,24 +80,24 @@ return {
       end,
     },
   },
-  -- {
-  --   "folke/tokyonight.nvim",
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {
-  --     style = "storm",
-  --     transparent = true,
-  --     styles = {
-  --       sidebars = "transparent",
-  --       floats = "transparent",
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     local tokyonight = require "tokyonight"
-  --     tokyonight.setup(opts)
-  --     tokyonight.load()
-  --   end,
-  -- },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      style = "storm",
+      transparent = true,
+      styles = {
+        sidebars = "transparent",
+        floats = "transparent",
+      },
+    },
+    config = function(_, opts)
+      local tokyonight = require "tokyonight"
+      tokyonight.setup(opts)
+      tokyonight.load()
+    end,
+  },
   -- {
   --   "Mofiqul/dracula.nvim",
   --   priority = 1000,
@@ -110,12 +110,12 @@ return {
   --     vim.cmd [[colorscheme dracula]]
   --   end,
   -- },
-  {
-    'kdheepak/monochrome.nvim',
-    config = function()
-      vim.cmd 'colorscheme monochrome'
-    end
-  },
+  -- {
+  --   'kdheepak/monochrome.nvim',
+  --   config = function()
+  --     vim.cmd 'colorscheme monochrome'
+  --   end
+  -- },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',

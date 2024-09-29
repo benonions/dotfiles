@@ -19,6 +19,7 @@ export PATH="$GOPATH/bin:$PATH"
 export PATH="$HOME/.rd/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/development/flutter/bin:$PATH"
+export PATH="$HOME/.emacs.d/bin:$PATH"
 
 export JIRA_API_TOKEN=$(ansible-vault view --vault-password-file=~/.ansible/vault_password_file ~/.ansible/auth_codes/jira_token)
 
@@ -45,6 +46,10 @@ fi;
 # Janky function to browse bash history
 fh() {
   print -z "$(({ [ -n "$ZSH_NAME" ] && fc -l 1 || history; } | fzf +s --tac) | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')"
+}
+
+uuid() {
+ uuidgen | tr '[:upper:]' '[:lower:]'
 }
 
 openconnectnlPass() {
@@ -139,7 +144,7 @@ mysqueel() {
 }
 
 ppatch() {
-kubectl patch deployment tfc-driver-dmv-master --type='merge' -p '{
+kubectl patch deployment tfc-driver-dmv-master-v3 --type='merge' -p '{
   "spec": {
     "template": {
       "metadata": {
