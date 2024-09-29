@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: NMOS ticket
+# key: nmos-ticket
+# --
+
+AC: Add demystifier functions for DEVICE_TYPE
+
+Device Type ID:
+
+Node Port:
+
+Connection Port:
