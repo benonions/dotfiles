@@ -4,8 +4,8 @@ if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
 fi
 
 autoload -Uz compinit
-compinit
 source <(kubectl completion zsh)
+source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 export DOTFILES="$HOME/.dotfiles"
 export EDITOR="nvim"
@@ -21,14 +21,44 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/development/flutter/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 
-export JIRA_API_TOKEN=$(ansible-vault view --vault-password-file=~/.ansible/vault_password_file ~/.ansible/auth_codes/jira_token)
-
-
-
 # Import aliases
 source "$DOTFILES/zsh/aliases"
 alias killtmux="tmux kill-session -t \$(tmux list-sessions -F '#S' | fzf)"  
 alias glp='git log --pretty=format:"%h - %cn, %cr : %s"'
+
+#reload zshrc
+alias zsrc="source ~/.zshrc"
+
+# perform "git pull" for all directories under the CWD
+alias git_pull_all="ls | xargs -P10 -I{} git -C {} pull"
+
+# run go test on CWD and open report in html
+alias gotestall='go test -v -coverprofile cover.out ./...'
+alias goshowcoverage='go tool cover -html=cover.out -o cover.html && open cover.html'
+
+
+# too lazy to type "lazygit"
+alias lg="lazygit"
+
+#some kubectl shortcuts
+alias kgp="kubectl get pods"
+alias kgn="kubectl get nodes"
+alias kgd="kubectl get deployments"
+alias kdp="kubectl describe pod"
+alias kdn="kubectl describe node"
+alias kdd="kubectl describe deployment"
+alias stern="kubectl stern"
+
+
+# install/sync nix packages with home-manager
+alias hms="home-manager switch"
+
+#zellij
+alias zj="zellij"
+
+#nerdctl 
+alias fixrd="sudo ln -s ~$USER/.rd/docker.sock /var/run/docker.sock"
+alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
 
 eval "$(thefuck --alias)"   # Magnificent app which corrects your previous console command.
 eval "$(starship init zsh)" # using starship for prompt
@@ -120,6 +150,12 @@ ppp() {
   fi
 }
 
+gwj () {
+  local out
+  out=$(git worktree list | fzf | awk '{print $1}')
+  cd $out
+}
+
 oatmeal-sessions() {
     (
         cd "$(oatmeal sessions dir)"
@@ -172,9 +208,6 @@ getCiscoPass() {
 security find-generic-password -s cisco_switch  -w
 }
 
-source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
-autoload -U compinit; compinit
 
 # opam configuration
 [[ ! -r /Users/ben/.opam/opam-init/init.zsh ]] || source /Users/ben/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
