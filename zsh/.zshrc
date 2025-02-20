@@ -20,11 +20,17 @@ export PATH="$HOME/.rd/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/development/flutter/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
-
+export PATH=$PATH:/usr/local/go/bin
+export XDG_CONFIG_HOME="/Users/ben/.config"
 # Import aliases
 source "$DOTFILES/zsh/aliases"
 alias killtmux="tmux kill-session -t \$(tmux list-sessions -F '#S' | fzf)"  
 alias glp='git log --pretty=format:"%h - %cn, %cr : %s"'
+alias pip="pip3"
+
+bulk-replace() {
+    rg --files-with-matches "$1" -g '*.go' | xargs sed -i '' "s/$1/$2/g"
+}
 
 #reload zshrc
 alias zsrc="source ~/.zshrc"
@@ -49,12 +55,15 @@ alias kdn="kubectl describe node"
 alias kdd="kubectl describe deployment"
 alias stern="kubectl stern"
 
-
+alias get-deployment='mkdir -p deploy && kubectl get $(kubectl get deployments -o name | fzf) -o yaml > deploy/deployment.yaml'
 # install/sync nix packages with home-manager
 alias hms="home-manager switch"
 
 #zellij
 alias zj="zellij"
+
+alias addip="sudo ifconfig en0 add 10.10.121.2 255.255.255.0"
+alias delip="sudo ifconfig en0 delete 10.10.121.2"
 
 #nerdctl 
 alias fixrd="sudo ln -s ~$USER/.rd/docker.sock /var/run/docker.sock"
@@ -66,11 +75,6 @@ eval "$(zoxide init zsh)"
 
 export GOPATH="$HOME/go"
 export TERM="screen-256color"
-
-if [[ -x "$(command -v zellij)" ]];
-then
-    eval "$(zellij setup --generate-completion zsh | grep "^function")"
-fi;
 
 
 # Janky function to browse bash history
@@ -180,7 +184,7 @@ mysqueel() {
 }
 
 ppatch() {
-kubectl patch deployment tfc-driver-dmv-master-v3 --type='merge' -p '{
+kubectl patch deployment tfc-routestate-graph --type='merge' -p '{
   "spec": {
     "template": {
       "metadata": {
@@ -208,6 +212,15 @@ getCiscoPass() {
 security find-generic-password -s cisco_switch  -w
 }
 
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
 
 # opam configuration
 [[ ! -r /Users/ben/.opam/opam-init/init.zsh ]] || source /Users/ben/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
@@ -229,7 +242,7 @@ esac
 # pnpm end
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/ben/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/ben/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/ben/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/ben/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ben/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
