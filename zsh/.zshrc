@@ -41,6 +41,7 @@ alias git_pull_all="ls | xargs -P10 -I{} git -C {} pull"
 # run go test on CWD and open report in html
 alias gotestall='go test -v -coverprofile cover.out ./...'
 alias goshowcoverage='go tool cover -html=cover.out -o cover.html && open cover.html'
+alias zf='fd -e pdf | fzf | xargs -r zathura'
 
 
 # too lazy to type "lazygit"
@@ -242,7 +243,7 @@ esac
 # pnpm end
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/ben/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/ben/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/ben/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ben/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/ben/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/completion.zsh.inc'; fi

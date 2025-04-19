@@ -2,11 +2,12 @@
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
-(setq select-enable-clipboard t)
+
+
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "Ben Onions"
-      user-mail-address "benonions@nepgroup.com")
+;; (setq user-full-name "John Doe"
+;;       user-mail-address "john@doe.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
@@ -16,7 +17,17 @@
 ;;   presentations or streaming.
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
-;;
+
+(after! flycheck
+  (require 'flycheck-golangci-lint)
+  (flycheck-golangci-lint-setup))
+
+;; Optional: run only this checker for Go
+(after! go-mode
+  (setq flycheck-checker 'golangci-lint))
+
+
+
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
@@ -31,83 +42,71 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-tokyo-night)
-(add-to-list 'default-frame-alist '(alpha . 90))
+(setq doom-theme 'doom-molokai)
+(after! eww
+  (set-popup-rule! "^\\*eww\\*" :ignore t))
+
+(set-frame-parameter nil 'alpha-background 90) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
+
+(doom/set-frame-opacity 93) ;; Set to 90% opacity (adjust as desired)
+
+
+;;; Apply transparency to all new frames
+                                        ;(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+                                        ;
+;;; Apply transparency to current frame (esp. GUI startup)
+                                        ;(when (display-graphic-p)
+                                        ;  (set-frame-parameter (selected-frame) 'alpha '(90 . 90)))
+                                        ;
+;;; Ensure future frames also get transparency when using daemon
+                                        ;(add-hook 'after-make-frame-functions
+                                        ;          (lambda (f)
+                                        ;            (when (display-graphic-p f)
+                                        ;              (set-frame-parameter f 'alpha '(90 . 90)))))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
-
-(setq auth-sources '("~/.authinfo" "~/.authinfo.gpg" "~/.netrc"))
-
-
+(setq display-line-numbers-type t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
-(after! org
-  (setq org-default-notes-file (expand-file-name "inbox.org" org-directory))
-  (setq org-archive-location "~/org/archive/%s_archive::") ;; Adjust the path as needed
-  (setq org-capture-templates
-        '(
-          ("t" "Todo" entry (file+headline "inbox.org" "Tasks")
-           "* TODO %?\n  %i\n  %a")
 
-          ("p" "Priority Task" entry
-           (file+headline "inbox.org" "Tasks")
-           "* TODO [#A] %?\n  %i\n  %a")
+(setq org-noter-notes-search-path '("~/org/notes/"))
+(setq org-roam-directory (file-truename "~/org/notes"))
+(org-roam-db-autosync-mode)
+(use-package! websocket
+  :after org-roam)
 
-          ("n" "Note" entry (file+headline "inbox.org" "Notes")
-           "* %?\n  %i\n  %a")
+(use-package! org-roam-ui
+  :after org-roam ;; or :after org
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c r u") #'org-roam-ui-mode))
 
-          ("m" "Meeting" entry
-           (file+headline "inbox.org" "Meetings")
-           "* MEETING with %? :meeting:\n%U\n")
-
-         ("f" "Note in new file" plain
-                 (file (lambda () (expand-file-name
-                                   (concat
-                                    (format-time-string "%Y%m%d%H%M%S-")
-                                    (read-string "Name: ")
-                                    ".org")
-                                   org-roam-directory)))
-                 "#+title: %^{Title}\n\n* %?")
-
-          ("s" "Someday Task" entry
-           (file+headline "someday.org" "Someday")
-           "* %?\n  %i\n  %a")
-          ("j" "Jira ticket" entry
-           (file+headline "inbox.org" "Jira Tickets")
-           "* TODO %^{Ticket ID} - %^{Ticket Description}\n  %?")
-          ("e" "Email" entry
-           (file+headline "inbox.org" "Email")
-           "* TODO %^{Subject}\nFrom: %^{From}\n  %i%?")
-          ("l" "Slack message" entry
-           (file+headline "inbox.org" "Slack")
-           "* %^{From}%^{Topic}\n  %i%?")
-         ))
-  (setq org-agenda-files '("~/org/inbox.org"
-                           "~/org/projects.org"
-                           "~/org/someday.org"
-                           "~/org/jira/TFC.org"
-                           "~/org/next-actions.org"
-                           ))
+(setq auth-sources '("~/.authinfo"))
+(setq jiralib-url "https://nepgroup.atlassian.net")
+(global-set-key (kbd "C-c t") #'+vterm/toggle)
+(setq projectile-project-search-path '("~/code/nep/tfc" "~/code/nep/titanium/" "~/code/nep/tfo" "~/code/personal/go" ))
 
 
-(map! :leader
-      :desc "Open inbox" "o i" (lambda () (interactive) (find-file "~/org/inbox.org")))
-)
-
-;; Org-jira
-(after! org-jira
-   (setq jiralib-url "https://nepgroup.atlassian.net")
-   (setq org-jira-working-dir "~/org/jira"))
-
-
-(after! org-roam
-  (setq org-roam-directory "~/org/notes"))
-
-
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -138,5 +137,3 @@
 ;; etc).
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-

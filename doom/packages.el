@@ -3,9 +3,25 @@
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
-;; use 'M-x doom/reload'.
+(package! llama
+  :recipe (:host github :repo "tarsius/llama"))
 
+(package! flycheck-golangci-lint
+  :recipe (:host github :repo "weijiangan/flycheck-golangci-lint"))
 
+(unpin! org-roam)
+(package! org-roam-ui)
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+(package! org-jira)
+
+(package! kubernetes)
+
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;; (package! some-package)
 
@@ -47,5 +63,4 @@
 ;; ...or multiple packages
 ;; (unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
-;; (unpin! t(package! corfu)
-(package! org-jira)
+;; (unpin! t)
