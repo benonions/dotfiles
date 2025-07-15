@@ -42,7 +42,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-molokai)
+(setq doom-theme 'doom-gruvbox)
 (after! eww
   (set-popup-rule! "^\\*eww\\*" :ignore t))
 
@@ -71,7 +71,7 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/org")
 
 (setq org-noter-notes-search-path '("~/org/notes/"))
 (setq org-roam-directory (file-truename "~/org/notes"))
@@ -96,7 +96,7 @@
 (setq auth-sources '("~/.authinfo"))
 (setq jiralib-url "https://nepgroup.atlassian.net")
 (global-set-key (kbd "C-c t") #'+vterm/toggle)
-(setq projectile-project-search-path '("~/code/nep/tfc" "~/code/nep/titanium/" "~/code/nep/tfo" "~/code/personal/go" ))
+(setq projectile-project-search-path '("~/code/nep/tfc" "~/code/nep/titanium/" "~/code/nep/tfo" "~/code/personal/cm8" "~/code/personal/go" "~/code/personal/gleam" "~/code/personal/zig" "~/code/personal/elixir" "~/code/redonions" "~/org"))
 
 
 ;; accept completion from copilot and fallback to company
@@ -107,6 +107,33 @@
               ("TAB" . 'copilot-accept-completion)
               ("C-TAB" . 'copilot-accept-completion-by-word)
               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+;; 1. Don’t let Projectile scan or cache vendor/
+(after! projectile
+  ;; Ignore vendor/
+  (add-to-list 'projectile-globally-ignored-directories "vendor")
+
+  ;; Let Projectile work on TRAMP paths (remote)
+  (setq projectile-require-project-root nil
+        projectile-indexing-method 'alien     ; use git/locate on remote
+        projectile-enable-caching t)
+
+  (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
+  ;; Enable caching for remote projects explicitly
+  (defun +projectile-enable-remote-caching ()
+    (when (file-remote-p default-directory)
+      (setq-local projectile-enable-caching t)))
+
+  (add-hook 'find-file-hook #'+projectile-enable-remote-caching))
+
+;; 2. Tell lsp-mode (if you’re using :tools lsp) not to watch vendor/
+(after! lsp-mode
+  ;; ignore any directory named “vendor”
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor$")
+
+  ;; optional: disable the watcher‐count warning altogether
+  (setq lsp-file-watch-threshold nil))
+
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -137,3 +164,18 @@
 ;; etc).
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+
+(use-package! gleam-ts-mode
+  :config
+  ;; setup formatter to be used by `SPC c f`
+  (after! apheleia
+    (setf (alist-get 'gleam-ts-mode apheleia-mode-alist) 'gleam)
+    (setf (alist-get 'gleam apheleia-formatters) '("gleam" "format" "--stdin"))))
+
+(after! treesit
+  (add-to-list 'auto-mode-alist '("\\.gleam$" . gleam-ts-mode)))
+
+(after! gleam-ts-mode
+  (unless (treesit-language-available-p 'gleam)
+    ;; compile the treesit grammar file the first time
+    (gleam-ts-install-grammar)))

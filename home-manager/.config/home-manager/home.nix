@@ -53,7 +53,6 @@
         #fun
         thefuck # type 'fuck' after making a typo on a shell command.
         spotifyd #spotify daemon, needed for spotify TUI
-        spotify-tui #run spotify in the terminal, I only use this on Arch, not macOS
         lolcat
         taskwarrior-tui
         postgresql
