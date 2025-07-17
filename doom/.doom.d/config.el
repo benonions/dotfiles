@@ -3,10 +3,9 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-;; (setq user-full-name "John Doe"
+;; (setq user-full-name "Ben Onions"
 ;;       user-mail-address "john@doe.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -18,13 +17,6 @@
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 
-(after! flycheck
-  (require 'flycheck-golangci-lint)
-  (flycheck-golangci-lint-setup))
-
-;; Optional: run only this checker for Go
-(after! go-mode
-  (setq flycheck-checker 'golangci-lint))
 
 
 
@@ -43,13 +35,6 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-gruvbox)
-(after! eww
-  (set-popup-rule! "^\\*eww\\*" :ignore t))
-
-(set-frame-parameter nil 'alpha-background 90) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
-
-(doom/set-frame-opacity 93) ;; Set to 90% opacity (adjust as desired)
 
 
 ;;; Apply transparency to all new frames
@@ -65,6 +50,11 @@
                                         ;            (when (display-graphic-p f)
                                         ;              (set-frame-parameter f 'alpha '(90 . 90)))))
 
+
+(doom/set-frame-opacity 93) ;; Set to 90% opacity (adjust as desired)
+(set-frame-parameter nil 'alpha-background 90) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
@@ -72,9 +62,9 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org")
-
 (setq org-noter-notes-search-path '("~/org/notes/"))
 (setq org-roam-directory (file-truename "~/org/notes"))
+
 (org-roam-db-autosync-mode)
 (use-package! websocket
   :after org-roam)
@@ -96,57 +86,6 @@
 (setq auth-sources '("~/.authinfo"))
 (setq jiralib-url "https://nepgroup.atlassian.net")
 (global-set-key (kbd "C-c t") #'+vterm/toggle)
-
-
-;; accept completion from copilot and fallback to company
-;; (use-package! copilot
-;;   :hook (prog-mode . copilot-mode)
-;;   :bind (:map copilot-completion-map
-;;               ("<tab>" . 'copilot-accept-completion)
-;;               ("TAB" . 'copilot-accept-completion)
-;;               ("C-TAB" . 'copilot-accept-completion-by-word)
-;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
-(setq projectile-project-search-path
-      '("~/code/nep/tfc"
-        "~/code/nep/titanium/"
-        "~/code/nep/tfo"
-        "~/code/personal/cm8"
-        "~/code/personal/go"
-        "~/code/personal/gleam"
-        "~/code/personal/zig"
-        "~/code/personal/elixir"
-        "~/code/redonions"
-        "~/org"))
-
-(after! projectile
-  ;; Only disable require-root for TRAMP (not globally)
-  (setq projectile-indexing-method 'alien
-        projectile-enable-caching t)
-
-  ;; Ignore vendor
-  (add-to-list 'projectile-globally-ignored-directories "vendor")
-
-  ;; Handle remote project separately
-  (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
-
-  ;; TRAMP-specific caching
-  (defun +projectile-enable-remote-caching ()
-    (when (file-remote-p default-directory)
-      (setq-local projectile-enable-caching t)
-      (setq-local projectile-require-project-root nil)))
-
-  (add-hook 'find-file-hook #'+projectile-enable-remote-caching)
-
-  ;; Run this once at startup to discover local projects
-  (projectile-discover-projects-in-search-path))
-
-;; 2. Tell lsp-mode (if you’re using :tools lsp) not to watch vendor/
-(after! lsp-mode
-  ;; ignore any directory named “vendor”
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor$")
-
-  ;; optional: disable the watcher‐count warning altogether
-  (setq lsp-file-watch-threshold nil))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -179,6 +118,62 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 
+(after! flycheck
+  (require 'flycheck-golangci-lint)
+  (flycheck-golangci-lint-setup))
+
+;; Optional: run only this checker for Go
+(after! go-mode
+  (setq flycheck-checker 'golangci-lint))
+;; accept completion from copilot and fallback to company
+;; (use-package! copilot
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+
+(after! projectile
+  ;; Only disable require-root for TRAMP (not globally)
+  (setq projectile-indexing-method 'alien
+        projectile-enable-caching t)
+
+  (setq projectile-project-search-path
+        '("~/code/nep"
+          "~/code/personal/*"
+          "~/code/redonions"
+          "~/org"))
+  ;; Ignore vendor
+  (add-to-list 'projectile-globally-ignored-directories "vendor")
+
+  ;; Handle remote project separately
+  (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
+
+  ;; TRAMP-specific caching
+  (defun +projectile-enable-remote-caching ()
+    (when (file-remote-p default-directory)
+      (setq-local projectile-enable-caching t)
+      (setq-local projectile-require-project-root nil)))
+
+  (add-hook 'find-file-hook #'+projectile-enable-remote-caching)
+
+  ;; Run this once at startup to discover local projects
+  (projectile-discover-projects-in-search-path))
+
+;; 2. Tell lsp-mode (if you’re using :tools lsp) not to watch vendor/
+(after! lsp-mode
+  ;; ignore any directory named “vendor”
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor$")
+
+  ;; optional: disable the watcher‐count warning altogether
+  (setq lsp-file-watch-threshold nil))
+
+
+(after! eww
+  (set-popup-rule! "^\\*eww\\*" :ignore t))
+
 (after! circe
   ;; Function to fetch secrets via auth-source (Keychain or pass)
   (defun my/fetch-password (&rest params)
@@ -197,3 +192,52 @@
       :sasl-password ,(+pass-get-secret "irc/libera.chat")
       :channels ("#emacs")))
   )
+(setq fancy-splash-image (concat doom-user-dir "splash.png"))
+
+(defun run-devspace-dev ()
+  "Open a vterm on the right at the Projectile project root and run 'devspace dev'."
+  (interactive)
+  (require 'projectile)
+  (require 'vterm)
+  (let* ((project-root (projectile-project-root))
+         (default-directory project-root)
+         (buffer-name "*vterm-devspace*"))
+    (unless project-root
+      (user-error "Not in a Projectile project"))
+    (let ((vterm-window (split-window (selected-window) nil 'right)))
+      (select-window vterm-window)
+      (let ((vterm-buffer (get-buffer-create buffer-name)))
+        (with-current-buffer (vterm vterm-buffer)
+          (vterm-send-string "devspace dev")
+          (vterm-send-return))))))
+
+(map! :map dap-mode-map
+      :leader
+      :prefix ("d" . "dap")
+      ;; basics
+      :desc "dap next"          "n" #'dap-next
+      :desc "dap step in"       "i" #'dap-step-in
+      :desc "dap step out"      "o" #'dap-step-out
+      :desc "dap continue"      "c" #'dap-continue
+      :desc "dap hydra"         "h" #'dap-hydra
+      :desc "dap debug restart" "r" #'dap-debug-restart
+      :desc "dap debug"         "s" #'dap-debug
+
+      ;; debug
+      :prefix ("dd" . "Debug")
+      :desc "dap debug recent"  "r" #'dap-debug-recent
+      :desc "dap debug last"    "l" #'dap-debug-last
+
+      ;; eval
+      :prefix ("de" . "Eval")
+      :desc "eval"                "e" #'dap-eval
+      :desc "eval region"         "r" #'dap-eval-region
+      :desc "eval thing at point" "s" #'dap-eval-thing-at-point
+      :desc "add expression"      "a" #'dap-ui-expressions-add
+      :desc "remove expression"   "d" #'dap-ui-expressions-remove
+
+      :prefix ("db" . "Breakpoint")
+      :desc "dap breakpoint toggle"      "b" #'dap-breakpoint-toggle
+      :desc "dap breakpoint condition"   "c" #'dap-breakpoint-condition
+      :desc "dap breakpoint hit count"   "h" #'dap-breakpoint-hit-condition
+      :desc "dap breakpoint log message" "l" #'dap-breakpoint-log-message)

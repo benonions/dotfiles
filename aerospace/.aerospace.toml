@@ -1,5 +1,5 @@
-# Reference: https://github.com/i3/i3/blob/next/etc/config
 start-at-login = true
+# Reference: https://github.com/i3/i3/blob/next/etc/config
 
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
@@ -8,10 +8,10 @@ default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
 
 [mode.main.binding]
-cmd-enter = 'exec-and-forget open -n wezterm'
+cmd-enter = 'exec-and-forget open -n /Applications/Ghostty.app'
+cmd-e = 'exec-and-forget /usr/local/bin/emacsclient -c -n'
 
 alt-m = 'exec-and-forget open -n /Applications/Spotify.app'
-
 alt-h = 'focus left'
 alt-j = 'focus down'
 alt-k = 'focus up'
@@ -25,8 +25,8 @@ alt-shift-l = 'move right'
 
 alt-f = 'fullscreen'
 
-alt-s = 'layout v_accordion' # 'layout stacking' in i3
-alt-w = 'layout h_accordion' # 'layout tabbed' in i3
+alt-s = 'layout v_accordion'               # 'layout stacking' in i3
+alt-w = 'layout h_accordion'               # 'layout tabbed' in i3
 alt-e = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
 
 alt-shift-space = 'layout floating tiling' # 'floating toggle' in i3
@@ -74,21 +74,21 @@ enter = 'mode main'
 esc = 'mode main'
 
 [gaps]
-inner.horizontal = 0
-inner.vertical =   0
-outer.left =       0
-outer.bottom =     0
-outer.top =        0
-outer.right =      0
+inner.horizontal = 5
+inner.vertical = 5
+outer.left = 5
+outer.bottom = 5
+outer.top = 5
+outer.right = 5
 
 [workspace-to-monitor-force-assignment]
-1 = 'main' 
-2 = 'main'
-3 = 'main'
-4 = 'main'
-5 = 'main'
-6 = 'main'
-7 = 'main'
-8 = 'main'
-9 = 'Built-in Retina Display'
-10 = ['Q27q-10', 'secondary']
+1 = 'DELL P2721Q'
+2 = 'DELL P2721Q'
+3 = 'DELL P2721Q'
+4 = 'DELL P2721Q'
+5 = 'DELL P2721Q'
+6 = ['Built-in Display', 'Built-in Retina Display']
+7 = ['Built-in Display', 'Built-in Retina Display']
+8 = ['Built-in Display', 'Built-in Retina Display']
+9 = ['Built-in Display', 'Built-in Retina Display']
+10 = ['Built-in Display', 'Built-in Retina Display']

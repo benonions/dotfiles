@@ -33,7 +33,7 @@ export PATH="$HOME/development/flutter/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$GOROOT/bin:$PATH
-
+export PATH=~/.asdf/shims:$PATH
 # pnpm
 export PNPM_HOME="/Users/ben/Library/pnpm"
 case ":$PATH:" in
