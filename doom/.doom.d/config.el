@@ -141,15 +141,18 @@
         projectile-enable-caching t)
 
   (setq projectile-project-search-path
-        '("~/code/nep"
-          "~/code/personal/*"
-          "~/code/redonions"
+        '("~/code/"
           "~/org"))
   ;; Ignore vendor
   (add-to-list 'projectile-globally-ignored-directories "vendor")
 
   ;; Handle remote project separately
   (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
+
+  (add-to-list 'projectile-known-projects "/ssh:home-worker:/home/ubuntu/")
+
+
+  (add-to-list 'projectile-known-projects "/ssh:ben-devbox:/home/ben/lawo-homeapps")
 
   ;; TRAMP-specific caching
   (defun +projectile-enable-remote-caching ()
@@ -241,3 +244,39 @@
       :desc "dap breakpoint condition"   "c" #'dap-breakpoint-condition
       :desc "dap breakpoint hit count"   "h" #'dap-breakpoint-hit-condition
       :desc "dap breakpoint log message" "l" #'dap-breakpoint-log-message)
+
+
+;; minimal working setup
+(use-package! consult-gh
+  :after consult                     ; make sure consult is loaded first
+  :init
+  ;; where repo clones land when you hit "c" to clone
+  (setq consult-gh-default-clone-directory "~/code/nep")
+  ;; nicer UX (optional)
+  (setq consult-gh-show-preview t
+        consult-gh-preview-key "C-o")
+  :config
+  ;; enable out‑of‑the‑box keybindings inside issue/PR buffers
+  (consult-gh-enable-default-keybindings))
+
+;; Embark actions (clone/fork/etc.) – uncomment if you installed consult-gh-embark
+;; (use-package! consult-gh-embark
+;;   :after (consult-gh embark)
+;;   :config (consult-gh-embark-mode +1))
+
+
+
+
+(after! org-jira
+  (defun my/org-jira-get-assigned-issues ()
+    "Fetch Jira issues assigned to me using a custom JQL query."
+    (interactive)
+    (org-jira-get-issues-from-custom-jql
+     (list
+      (list :filename "assigned-to-me"
+            :jql "assignee = currentUser() AND resolution = Unresolved ORDER BY updated DESC"
+            :limit 100))))
+  )
+
+;; refresh buffer if file changes on disk (i.e. if I edit it outside emacs)
+(global-auto-revert-mode 1)

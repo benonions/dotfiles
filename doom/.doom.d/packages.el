@@ -23,6 +23,11 @@
 (package! gtea)
 (package! gogs)
 (package! buck)
+
+
+
+(package! consult-gh)
+(package! protobuf-mode)
 ;; (package! copilot
 ;;   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:

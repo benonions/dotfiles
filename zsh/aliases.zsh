@@ -29,6 +29,9 @@ alias get-deployment='mkdir -p deploy && kubectl get $(kubectl get deployments -
 # Home Manager
 alias hms="home-manager switch"
 
+#read local http 
+alias reader="python3 -m http.server 8086"
+
 # Zellij
 alias zj="zellij"
 
@@ -41,3 +44,4 @@ alias fixrd="sudo ln -s ~$USER/.rd/docker.sock /var/run/docker.sock"
 alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
 
 alias rebuild-emacs="doom sync --rebuild && brew services restart emacs-plus@30"
+alias restart-emacs="brew services restart emacs-plus@30"
