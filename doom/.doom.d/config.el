@@ -34,9 +34,10 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
-
-
+(setq doom-theme 'doom-tokyo-night)
+(use-package! verb
+  :commands verb-mode
+  :mode ("\\.\\(http\\|rest\\)\\'" . verb-mode))
 ;;; Apply transparency to all new frames
                                         ;(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
                                         ;
@@ -126,13 +127,13 @@
 (after! go-mode
   (setq flycheck-checker 'golangci-lint))
 ;; accept completion from copilot and fallback to company
-;; (use-package! copilot
-;;   :hook (prog-mode . copilot-mode)
-;;   :bind (:map copilot-completion-map
-;;               ("<tab>" . 'copilot-accept-completion)
-;;               ("TAB" . 'copilot-accept-completion)
-;;               ("C-TAB" . 'copilot-accept-completion-by-word)
-;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
 
 
 (after! projectile
@@ -280,3 +281,7 @@
 
 ;; refresh buffer if file changes on disk (i.e. if I edit it outside emacs)
 (global-auto-revert-mode 1)
+(setq elfeed-feeds      '("https://this-week-in-rust.org/rss.xml"
+                          ))
+(load-file "~/.doom.d/lisp/launchers.el")
+(setq display-line-numbers-type 'relative)
