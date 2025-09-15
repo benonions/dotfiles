@@ -82,11 +82,11 @@ outer.top = 5
 outer.right = 5
 
 [workspace-to-monitor-force-assignment]
-1 = 'DELL P2721Q'
-2 = 'DELL P2721Q'
-3 = 'DELL P2721Q'
-4 = 'DELL P2721Q'
-5 = 'DELL P2721Q'
+1 = ['DELL P2721Q', 'Q27q-10'] 
+2 = ['DELL P2721Q', 'Q27q-10'] 
+3 = ['DELL P2721Q', 'Q27q-10'] 
+4 = ['DELL P2721Q', 'Q27q-1L'] 
+5 = ['DELL P2721Q', 'Q27q-1L'] 
 6 = ['Built-in Display', 'Built-in Retina Display']
 7 = ['Built-in Display', 'Built-in Retina Display']
 8 = ['Built-in Display', 'Built-in Retina Display']
