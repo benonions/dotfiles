@@ -21,11 +21,11 @@ command -v zoxide >/dev/null 2>&1 && eval "$(command zoxide init zsh)"
 # Direnv - environment variables per directory
 command -v direnv >/dev/null 2>&1 && eval "$(command direnv hook zsh)"
 
-# NVM - Node Version Manager (lazy loaded for performance)
-# To use nvm, just type 'nvm' and it will load on first use
-alias nvm='unalias nvm; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; nvm'
-alias node='unalias node; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; node'
-alias npm='unalias npm; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npm'
+# # NVM - Node Version Manager (lazy loaded for performance)
+# # To use nvm, just type 'nvm' and it will load on first use
+# alias nvm='unalias nvm; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; nvm'
+# alias node='unalias node; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; node'
+# alias npm='unalias npm; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npm'
 
 # Google Cloud SDK path
 if [ -f '/Users/ben/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/path.zsh.inc'; fi
