@@ -33,7 +33,7 @@
         glow
         skate
         soft-serve
-
+        lnav
         # general tools
         starship
         ripgrep

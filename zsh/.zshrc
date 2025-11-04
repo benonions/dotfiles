@@ -21,3 +21,4 @@ export NVM_DIR="$HOME/.config/nvm"
 # AsyncAPI CLI Autocomplete
 
 ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/ben/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup && test -f $ASYNCAPI_AC_ZSH_SETUP_PATH && source $ASYNCAPI_AC_ZSH_SETUP_PATH; # asyncapi autocomplete setup
+autoload -U compinit; compinit
