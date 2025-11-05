@@ -67,6 +67,33 @@
             taskwarrior-tui
             postgresql
             hexyl
+            nodejs_24
+
+            # Ported from Homebrew
+            direnv
+            argocd
+            autoconf
+            cmake
+            coreutils
+            curl
+            diffutils
+            # gcc # Keep in Homebrew for emacs-plus
+            gnused
+            gnutar
+            # gnutls # Keep in Homebrew for emacs-plus
+            gnugrep
+            jq
+            libtool
+            ninja
+            nmap
+            openssh
+            pkg-config
+            tmux
+            tree
+            # tree-sitter # Keep in Homebrew for emacs-plus
+            speedtest-cli
+            mu
+            qemu
           ];
 
         # nix.package = pkgs.nix;
@@ -111,117 +138,116 @@
 
         homebrew.brews =
           [
-            "direnv"
+            # "direnv" # Moved to Nix
             "amp"
-            "argocd"
+            # "argocd" # Moved to Nix
             "argocd-autopilot"
             "argocd-vault-plugin"
-            "autoconf"
-            "awk"
-            "brotli"
-            "ca-certificates"
-            "cairo"
-            "capstone"
-            "cmake"
-            "coreutils"
-            "curl"
-            "diffutils"
-            "docker"
+            # "autoconf" # Moved to Nix
+            "awk" # macOS specific version
+            "brotli" # Library dependency
+            "ca-certificates" # System dependency
+            "cairo" # Library dependency
+            "capstone" # Library dependency
+            # "cmake" # Moved to Nix
+            # "coreutils" # Moved to Nix
+            # "curl" # Moved to Nix
+            # "diffutils" # Moved to Nix
+            "docker" # Keep for Docker Desktop integration
             "docker-completion"
-            "doctl"
-            "dtc"
-            "erlang"
-            "fontconfig"
-            "freetype"
-            "fribidi"
-            "gcc"
-            "gdk-pixbuf"
-            "gettext"
-            "glib"
-            "gmp"
-            "gnu-sed"
-            "gnu-tar"
-            "gnutls"
-            "graphite2"
-            "grep"
-            "harfbuzz"
-            "icu4c"
-            "jansson"
-            "jpeg-turbo"
-            "jq"
-            "ldns"
-            "libcbor"
-            "libevent"
-            "libfido2"
-            "libidn2"
-            "liblinear"
-            "libmpc"
-            "libnghttp2"
-            "libpng"
-            "librsvg"
-            "libslirp"
-            "libssh"
-            "libssh2"
-            "libtasn1"
-            "libtiff"
-            "libtool"
-            "libunistring"
-            "libusb"
-            "libx11"
-            "libxau"
-            "libxcb"
-            "libxdmcp"
-            "libxext"
-            "libxrender"
-            "libyaml"
-            "lima"
-            "little-cms2"
-            "lz4"
-            "lzo"
-            "m4"
-            "make"
-            "mpdecimal"
-            "mpfr"
-            "ncurses"
-            "nettle"
-            "ninja"
-            "nmap"
-            "oniguruma"
-            "openldap"
-            "openssh"
-            "openssl@3"
-            "p11-kit"
-            "pango"
-            "pcre2"
-            "pipx"
-            "pixman"
-            "pkg-config"
-            "python-argcomplete"
-            "python@3.11"
-            "python@3.12"
-            "qemu"
-            "readline"
-            "rtmpdump"
-            "snappy"
-            "speedtest-cli"
-            "sqlite"
-            "texinfo"
-            "tmux"
-            "tree"
-            "tree-sitter"
-            "unbound"
-            "unixodbc"
-            "utf8proc"
-            "vde"
-            "wxwidgets"
-            "xorgproto"
-            "xz"
-            "yubikey-agent"
-            "zstd"
-            "mu"
-            "emacs-plus@31"
-            "acli"
-            "container-compose"
+            "doctl" # Already in Nix above
+            "dtc" # Library dependency
+            "fontconfig" # Library dependency
+            "freetype" # Library dependency
+            "fribidi" # Library dependency
+            "gcc" # Required by emacs-plus@31
+            "gdk-pixbuf" # Library dependency
+            "gettext" # Library dependency
+            "glib" # Library dependency
+            "gmp" # Library dependency
+            # "gnu-sed" # Moved to Nix (gnused)
+            # "gnu-tar" # Moved to Nix (gnutar)
+            "gnutls" # Required by emacs-plus@31
+            "graphite2" # Library dependency
+            # "grep" # Moved to Nix (gnugrep)
+            "harfbuzz" # Library dependency
+            "icu4c" # Library dependency
+            "jansson" # Library dependency
+            "jpeg-turbo" # Library dependency
+            # "jq" # Moved to Nix
+            "ldns" # Library dependency
+            "libcbor" # Library dependency
+            "libevent" # Library dependency
+            "libfido2" # Library dependency
+            "libidn2" # Library dependency
+            "liblinear" # Library dependency
+            "libmpc" # Library dependency
+            "libnghttp2" # Library dependency
+            "libpng" # Library dependency
+            "librsvg" # Library dependency
+            "libslirp" # Library dependency
+            "libssh" # Library dependency
+            "libssh2" # Library dependency
+            "libtasn1" # Library dependency
+            "libtiff" # Library dependency
+            # "libtool" # Moved to Nix
+            "libunistring" # Library dependency
+            "libusb" # Library dependency
+            "libx11" # Library dependency
+            "libxau" # Library dependency
+            "libxcb" # Library dependency
+            "libxdmcp" # Library dependency
+            "libxext" # Library dependency
+            "libxrender" # Library dependency
+            "libyaml" # Library dependency
+            "lima" # Keep for VM management
+            "little-cms2" # Library dependency
+            "lz4" # Library dependency
+            "lzo" # Library dependency
+            "m4" # Build dependency
+            "make" # Build dependency
+            "mpdecimal" # Library dependency
+            "mpfr" # Library dependency
+            "ncurses" # Library dependency
+            "nettle" # Library dependency
+            # "ninja" # Moved to Nix
+            # "nmap" # Moved to Nix
+            "oniguruma" # Library dependency
+            "openldap" # Library dependency
+            # "openssh" # Moved to Nix
+            "openssl@3" # System dependency
+            "p11-kit" # Library dependency
+            "pango" # Library dependency
+            "pcre2" # Library dependency
+            "pipx" # Python package manager
+            "pixman" # Library dependency
+            # "pkg-config" # Moved to Nix
+            "python-argcomplete" # Python dependency
+            "python@3.11" # Keep specific Python versions
+            "python@3.12" # Keep specific Python versions
+            # "qemu" # Moved to Nix
+            "readline" # Library dependency
+            "rtmpdump" # Library dependency
+            "snappy" # Library dependency
+            # "speedtest-cli" # Moved to Nix
+            "sqlite" # Library dependency
+            "texinfo" # Build dependency
+            # "tmux" # Moved to Nix
+            # "tree" # Moved to Nix
+            "tree-sitter" # Required by emacs-plus@31
+            "unbound" # Library dependency
+            "unixodbc" # Library dependency
+            "utf8proc" # Library dependency
+            "vde" # Library dependency
+            "wxwidgets" # Library dependency
+            "xorgproto" # Library dependency
+            "xz" # Library dependency
+            "yubikey-agent" # Keep for Yubikey support
+            "zstd" # Library dependency
+            # "mu" # Moved to Nix
+            "emacs-plus@31" # Keep for special Emacs build
+            "acli" # Atlassian CLI
+            "container-compose" # Docker compose alternative
           ];
 
         homebrew.taps = [
