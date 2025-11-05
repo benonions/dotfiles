@@ -220,11 +220,14 @@
             "zstd"
             "mu"
             "emacs-plus@31"
+            "acli"
+            "container-compose"
           ];
 
         homebrew.taps = [
           "nikitabobko/tap"
           "d12frosted/emacs-plus"
+          "atlassian/homebrew-acli"
         ];
 
         homebrew.casks =
@@ -233,6 +236,7 @@
             "alacritty"
             "flutter"
             "ghostty"
+            "raycast"
           ];
       };
 
