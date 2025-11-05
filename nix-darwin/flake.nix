@@ -230,21 +230,25 @@
           "atlassian/homebrew-acli"
         ];
 
-        homebrew.casks =
-          [
-            "aerospace"
-            "alacritty"
-            "flutter"
-            "ghostty"
-            "raycast"
-          ];
+	homebrew.casks =
+		[
+		"aerospace"
+		"flutter"
+		"ghostty"
+		"raycast"
+		];
       };
+
 
     in
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#Benjamins-MacBook-Pro-2
       darwinConfigurations."Benjamins-MacBook-Pro-2" = nix-darwin.lib.darwinSystem {
+        modules = [ configuration ];
+      };
+
+      darwinConfigurations."Bens-BlackBook-Pro" = nix-darwin.lib.darwinSystem {
         modules = [ configuration ];
       };
 
