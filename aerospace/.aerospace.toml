@@ -9,7 +9,7 @@ default-root-container-orientation = 'auto'
 
 [mode.main.binding]
 cmd-enter = 'exec-and-forget open -n /Applications/Ghostty.app'
-cmd-e = 'exec-and-forget /usr/local/bin/emacsclient -c -n'
+cmd-e = 'exec-and-forget /run/current-system/sw/bin/emacsclient -c -n'
 
 alt-m = 'exec-and-forget open -n /Applications/Spotify.app'
 alt-h = 'focus left'

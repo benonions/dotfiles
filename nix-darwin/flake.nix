@@ -7,6 +7,8 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # emacs-overlay-url = "github:nix-community/emacs-overlay";
+    # emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
 
@@ -18,11 +20,18 @@
         # $ nix-env -qaP | grep wget
 
         system.primaryUser = "ben";
-          
+ 
+      services.emacs = {
+         enable = true;
+         package = pkgs.emacs;
+      };
+         
 
         environment.systemPackages = with pkgs;
           [
+          emacs
             vim
+            cbonsai
             k9s
             kubectl
             krew
@@ -245,7 +254,7 @@
             "yubikey-agent" # Keep for Yubikey support
             "zstd" # Library dependency
             # "mu" # Moved to Nix
-            "emacs-plus@31" # Keep for special Emacs build
+            # "emacs-plus@31" # Keep for special Emacs build
             "acli" # Atlassian CLI
             "container-compose" # Docker compose alternative
           ];
@@ -262,6 +271,7 @@
 		"flutter"
 		"ghostty"
 		"raycast"
+                "jordanbaird-ice"
 		];
       };
 

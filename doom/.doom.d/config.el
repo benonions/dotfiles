@@ -34,7 +34,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-nord)
 (use-package! verb
   :commands verb-mode
   :mode ("\\.\\(http\\|rest\\)\\'" . verb-mode))
@@ -53,8 +53,21 @@
 
 
 (doom/set-frame-opacity 93) ;; Set to 90% opacity (adjust as desired)
-(set-frame-parameter nil 'alpha-background 90) ; For current frame
+;; (set-frame-parameter nil 'alpha-background 90) ; For current frame
 (add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
+                                        ;
+;; Ensure transparency applies to frames created by emacsclient
+(defun my/restore-transparency (&optional frame)
+  (when (display-graphic-p frame)
+    ;; Apply both Doom's helper and raw parameter
+    (doom/set-frame-opacity 93)
+    (set-frame-parameter frame 'alpha-background 90)))
+
+;; Run now for the current frame
+(my/restore-transparency (selected-frame))
+
+;; Run in future for any new frames (daemon mode)
+(add-hook 'after-make-frame-functions #'my/restore-transparency)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
