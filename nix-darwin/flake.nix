@@ -9,8 +9,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-
-
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, ... }:
     let
       configuration = { pkgs, config, ... }: {
@@ -42,15 +40,16 @@
             neovim
 
             # Development tools
-            nixd  # Nix language server
-            nil   # Alternative Nix language server
+            nixd # Nix language server
+            nixfmt
+            nil # Alternative Nix language server
             lazygit
             gh
             git-lfs
             rustup
             elixir
             nodejs_24
-            python312  # Use Python 3.12 as primary
+            python312 # Use Python 3.12 as primary
             # python311  # Commented out to avoid collision
             pipx
             direnv
@@ -126,7 +125,6 @@
           #   };
           # };
 
-
           # Shell program configs commented out - user manages their own shell
           # programs.starship = {
           #   enable = true;
@@ -146,7 +144,6 @@
 
         };
 
-
         # ========================================
         # SERVICES
         # ========================================
@@ -159,50 +156,49 @@
         # services.nix-daemon.enable = true;
         # services.tailscale.enable = true;  # VPN service
 
-        environment.systemPackages = with pkgs;
-          [
-              # Core system packages
-              emacs
-              docker
-              tmux
-              ansible
+        environment.systemPackages = with pkgs; [
+          # Core system packages
+          emacs
+          docker
+          tmux
+          ansible
 
-              # Shell & system tools
-              coreutils
-              gnused
-              gnutar
-              gnugrep
-              gawk  # GNU AWK
-              gnumake  # GNU Make
-              jq
-              curl
-              openssh
+          # Shell & system tools
+          coreutils
+          gnused
+          gnutar
+          gnugrep
+          gawk # GNU AWK
+          gnumake # GNU Make
+          jq
+          curl
+          openssh
 
-              # Build tools
-              autoconf
-              cmake
-              libtool
-              m4  # Macro processor
-              ninja
-              pkg-config
-              texinfo  # Documentation system
-              diffutils
+          # Build tools
+          autoconf
+          cmake
+          libtool
+          m4 # Macro processor
+          ninja
+          pkg-config
+          texinfo # Documentation system
+          diffutils
 
-              # Security & certificates
-              cacert  # CA certificates
-              openssl  # OpenSSL tools
-              libfido2  # FIDO2/WebAuthn tools
+          # Security & certificates
+          cacert # CA certificates
+          openssl # OpenSSL tools
+          libfido2 # FIDO2/WebAuthn tools
 
-              # Compression utilities
-              brotli  # Compression algorithm
-              lz4  # Fast compression
-              xz  # High-ratio compression
-              zstd  # Fast compression with good ratio
+          # Compression utilities
+          brotli # Compression algorithm
+          lz4 # Fast compression
+          xz # High-ratio compression
+          zstd # Fast compression with good ratio
 
-              # Network tools (system-level)
-              unbound  # DNS resolver
-              openldap  # LDAP client tools
-          ];
+          # Network tools (system-level)
+          unbound # DNS resolver
+          openldap # LDAP client tools
+        ];
 
         # ========================================
         # NIX CONFIGURATION
@@ -244,32 +240,6 @@
         # ========================================
         # Create /etc/zshrc that loads the nix-darwin environment.
         programs.zsh.enable = true; # default shell on catalina
-        # programs.bash.enable = true;
-        # programs.fish.enable = true;
-
-        # Environment variables
-        # environment.variables = {
-        #   EDITOR = "vim";
-        #   VISUAL = "vim";
-        #   PAGER = "less";
-        #   LANG = "en_US.UTF-8";
-        #   LC_ALL = "en_US.UTF-8";
-        # };
-
-        # Shell aliases
-        # environment.shellAliases = {
-        #   ll = "ls -la";
-        #   la = "ls -A";
-        #   l = "ls -CF";
-        #   g = "git";
-        #   gs = "git status";
-        #   gc = "git commit";
-        #   gp = "git push";
-        #   gl = "git pull";
-        #   k = "kubectl";
-        #   d = "docker";
-        #   dc = "docker-compose";
-        # };
 
         # Set Git commit hash for darwin-version.
         system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -311,7 +281,7 @@
           finder = {
             AppleShowAllExtensions = true;
             AppleShowAllFiles = true;
-            FXPreferredViewStyle = "clmv";  # Column view
+            FXPreferredViewStyle = "clmv"; # Column view
             # ShowPathbar = true;
             # ShowStatusBar = true;
             # FXDefaultSearchScope = "SCcf";  # Search current folder by default
@@ -486,7 +456,7 @@
         #   };
         # };
 
-        # HomeBrew = 
+        # HomeBrew =
         homebrew.enable = true;
         homebrew.onActivation = {
           autoUpdate = true;
@@ -496,27 +466,26 @@
 
         homebrew.brewPrefix = "/opt/homebrew/bin";
 
-        homebrew.brews =
-          [
-            # Packages that need to stay in Homebrew
-            "amp"  # Text editor - not in main nixpkgs
-            "argocd-autopilot"  # Not confirmed in nixpkgs
-            "acli"  # Atlassian CLI - not in nixpkgs
-            "container-compose"  # Docker compose alternative
+        homebrew.brews = [
+          # Packages that need to stay in Homebrew
+          "amp" # Text editor - not in main nixpkgs
+          "argocd-autopilot" # Not confirmed in nixpkgs
+          "acli" # Atlassian CLI - not in nixpkgs
+          "container-compose" # Docker compose alternative
 
-            # Keep for Docker Desktop integration
-            "docker"
-            "docker-completion"
+          # Keep for Docker Desktop integration
+          "docker"
+          "docker-completion"
 
-            # Required by emacs-plus@31
-            "gcc"
-            "gnutls"
-            "tree-sitter"
+          # Required by emacs-plus@31
+          "gcc"
+          "gnutls"
+          "tree-sitter"
 
-            # Python version not yet verified in nixpkgs
-            "python@3.14"
-            "python-argcomplete"
-          ];
+          # Python version not yet verified in nixpkgs
+          "python@3.14"
+          "python-argcomplete"
+        ];
 
         homebrew.taps = [
           "nikitabobko/tap"
@@ -524,43 +493,36 @@
           "atlassian/homebrew-acli"
         ];
 
-	homebrew.casks =
-		[
-		"aerospace"
-		"flutter"
-		"ghostty"
-		"raycast"
-        "jordanbaird-ice"
-        "hammerspoon"
-        "librewolf"
-        "element"
-        "signal"
-		];
+        homebrew.casks = [
+          "aerospace"
+          "flutter"
+          "ghostty"
+          "raycast"
+          "jordanbaird-ice"
+          "hammerspoon"
+          "librewolf"
+          "element"
+          "signal"
+        ];
       };
 
-
-    in
-    {
+    in {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#Benjamins-MacBook-Pro-2
-      darwinConfigurations."Benjamins-MacBook-Pro-2" = nix-darwin.lib.darwinSystem {
-        modules = [
-          configuration
-          home-manager.darwinModules.home-manager
-        ];
-      };
+      darwinConfigurations."Benjamins-MacBook-Pro-2" =
+        nix-darwin.lib.darwinSystem {
+          modules = [ configuration home-manager.darwinModules.home-manager ];
+        };
 
       darwinConfigurations."Bens-BlackBook-Pro" = nix-darwin.lib.darwinSystem {
-        modules = [
-          configuration
-          home-manager.darwinModules.home-manager
-        ];
+        modules = [ configuration home-manager.darwinModules.home-manager ];
       };
 
       # Expose the package set, including overlays, for convenience.
       darwinPackages = self.darwinConfigurations."Benjamins-MacBook-Pro-2".pkgs;
 
-      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixpkgs-fmt;
+      formatter.aarch64-darwin =
+        nixpkgs.legacyPackages.aarch64-darwin.nixpkgs-fmt;
     };
 
 }
