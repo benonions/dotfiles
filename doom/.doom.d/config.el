@@ -140,14 +140,14 @@
 (after! go-mode
   (setq flycheck-checker 'golangci-lint))
 ;; accept completion from copilot and fallback to company
-(use-package! copilot
-  :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("<tab>" . 'copilot-accept-completion)
-              ("TAB" . 'copilot-accept-completion)
-              ("C-TAB" . 'copilot-accept-completion-by-word)
-              ("C-<tab>" . 'copilot-accept-completion-by-word)))
-
+;; (use-package! copilot
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+;;
 
 (after! projectile
   ;; Only disable require-root for TRAMP (not globally)
@@ -156,7 +156,9 @@
 
   (setq projectile-project-search-path
         '("~/code/"
-          "~/org"))
+          "~/org"
+          "~/.dotfiles/"
+          ))
   ;; Ignore vendor
   (add-to-list 'projectile-globally-ignored-directories "vendor")
 
@@ -278,7 +280,9 @@
 ;;   :after (consult-gh embark)
 ;;   :config (consult-gh-embark-mode +1))
 
-
+;; atomic-chrome for ghost-text
+;; (require 'atomic-chrome)
+(atomic-chrome-start-server)
 
 
 (after! org-jira
