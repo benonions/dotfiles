@@ -4,6 +4,11 @@
 [[ -f "$DOTFILES/zsh/aliases" ]] && source "$DOTFILES/zsh/aliases"
 
 # General aliases
+# Use eza if available, otherwise fall back to ls
+if command -v eza &> /dev/null; then
+  alias ls="eza"
+fi
+
 alias killtmux="tmux kill-session -t \$(tmux list-sessions -F '#S' | fzf)"  
 alias glp='git log --pretty=format:"%h - %cn, %cr : %s"'
 alias pip="pip3"

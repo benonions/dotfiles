@@ -52,16 +52,16 @@
                                         ;              (set-frame-parameter f 'alpha '(90 . 90)))))
 
 
-(doom/set-frame-opacity 93) ;; Set to 90% opacity (adjust as desired)
+(doom/set-frame-opacity 95) ;; Set to 90% opacity (adjust as desired)
 ;; (set-frame-parameter nil 'alpha-background 90) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
+(add-to-list 'default-frame-alist '(alpha-background . 95)) ; For all new frames henceforth
                                         ;
 ;; Ensure transparency applies to frames created by emacsclient
 (defun my/restore-transparency (&optional frame)
   (when (display-graphic-p frame)
     ;; Apply both Doom's helper and raw parameter
-    (doom/set-frame-opacity 93)
-    (set-frame-parameter frame 'alpha-background 90)))
+    (doom/set-frame-opacity 95)
+    (set-frame-parameter frame 'alpha-background 95)))
 
 ;; Run now for the current frame
 (my/restore-transparency (selected-frame))
@@ -77,7 +77,16 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org")
 (setq org-noter-notes-search-path '("~/org/notes/"))
+
+(setq org-roam-database-connector 'sqlite3) ;; use emacsql-sqlite3 binaryv
 (setq org-roam-directory (file-truename "~/org/notes"))
+
+(after! org
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Tasks")
+           "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+           "* %?\nEntered on %U\n  %i\n  %a"))))
 
 (org-roam-db-autosync-mode)
 (use-package! websocket
@@ -302,3 +311,15 @@
                           ))
 (load-file "~/.doom.d/lisp/launchers.el")
 (setq display-line-numbers-type 'relative)
+
+(use-package! smudge
+  :bind-keymap ("C-c ." . smudge-command-map)
+  :custom
+  (smudge-oauth2-client-secret "5f396ae20ee941fe865ec0f514e324c9")
+  (smudge-oauth2-client-id "fa5f87a748f0410498056d2ca23e2b5f")
+  ;; optional: enable transient map for frequent commands
+  (smudge-player-use-transient-map t)
+  :config
+  ;; optional: display current song in mode line
+  (global-smudge-remote-mode)
+  )

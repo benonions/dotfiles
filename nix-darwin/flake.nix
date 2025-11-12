@@ -48,18 +48,19 @@
             git-lfs
             rustup
             elixir
-            nodejs_24
+            nodejs
             python312 # Use Python 3.12 as primary
             # python311  # Commented out to avoid collision
             pipx
             direnv
             starship
-
+            wget
             # Charm.sh tools
             gum
             glow
             skate
             soft-serve
+            pandoc
 
             # Terminal utilities
             ripgrep
@@ -76,6 +77,8 @@
             parallel
             stow
             tree
+            bat
+            lnav
 
             # Container/Cloud tools
             k9s
@@ -110,6 +113,7 @@
 
             # Email
             mu
+            davmail
           ];
 
           # Git configuration

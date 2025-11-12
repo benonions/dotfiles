@@ -25,12 +25,23 @@
 (package! buck)
 (package! verb)
 
-
+(package! smudge)
 (package! atomic-chrome)
-
+(package! emacsql-sqlite3)
 
 (package! consult-gh)
 (package! protobuf-mode)
+
+(package! eat
+  :recipe (:host codeberg
+           :repo "akib/emacs-eat"
+           :files ("*.el" ("term" "term/*.el") "*.texi"
+                   "*.ti" ("terminfo/e" "terminfo/e/*")
+                   ("terminfo/65" "terminfo/65/*")
+                   ("integration" "integration/*")
+                   (:exclude ".dir-loocals.el" "*-tests.el"))))
+
+(package! ox-jira)
 ;; (package! copilot
 ;;   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
