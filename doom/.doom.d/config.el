@@ -309,7 +309,9 @@
 (global-auto-revert-mode 1)
 (setq elfeed-feeds      '("https://this-week-in-rust.org/rss.xml"
                           ))
-(load-file "~/.doom.d/lisp/launchers.el")
+(load-file "~/.doom.d/lisp/launcher.el")
+(after! transient
+  (load! "lisp/devspace"))
 (setq display-line-numbers-type 'relative)
 
 (use-package! smudge

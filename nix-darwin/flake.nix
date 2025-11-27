@@ -95,7 +95,6 @@
 
             # Fun stuff
             thefuck
-            spotifyd
             lolcat
             taskwarrior-tui
             cbonsai
@@ -113,7 +112,6 @@
 
             # Email
             mu
-            davmail
           ];
 
           # Git configuration
@@ -489,6 +487,9 @@
           # Python version not yet verified in nixpkgs
           "python@3.14"
           "python-argcomplete"
+          "firefoxpwa"
+
+          "spotify_player"
         ];
 
         homebrew.taps = [
