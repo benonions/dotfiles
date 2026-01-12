@@ -1,5 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
+(add-to-list 'load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e")
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
@@ -16,7 +16,21 @@
 ;;   presentations or streaming.
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+(when (eq system-type 'darwin)
+  ;; Make sure we use Homebrew stuff, not MacPorts, inside Emacs.
+  (setenv "PATH"
+          (concat "/opt/homebrew/bin:/opt/homebrew/sbin:"
+                  (getenv "PATH")))
+  (add-to-list 'exec-path "/opt/homebrew/bin")
+  (add-to-list 'exec-path "/opt/homebrew/sbin")
 
+  ;; Force use of Homebrew pkg-config
+  (setenv "PKG_CONFIG" "/opt/homebrew/bin/pkg-config")
+
+  ;; *** This is the important bit ***
+  ;; Overwrite any MacPorts PKG_CONFIG_PATH with Homebrew's pc dirs.
+  (setenv "PKG_CONFIG_PATH"
+          "/opt/homebrew/lib/pkgconfig:/opt/homebrew/share/pkgconfig"))
 
 
 
@@ -263,7 +277,7 @@
       :desc "eval thing at point" "s" #'dap-eval-thing-at-point
       :desc "add expression"      "a" #'dap-ui-expressions-add
       :desc "remove expression"   "d" #'dap-ui-expressions-remove
-
+      
       :prefix ("db" . "Breakpoint")
       :desc "dap breakpoint toggle"      "b" #'dap-breakpoint-toggle
       :desc "dap breakpoint condition"   "c" #'dap-breakpoint-condition
@@ -325,3 +339,14 @@
   ;; optional: display current song in mode line
   (global-smudge-remote-mode)
   )
+
+
+(after! mu4e
+  (setq mu4e-root-maildir (expand-file-name "~/Maildir")
+        mu4e-get-mail-command "true"
+        user-mail-address "bonions@nepgroup.com")
+
+  ;; disable composing from emacs
+  (defun my/mu4e-compose-disabled (&rest _args)
+    (user-error "Compose disabled; use Apple Mail"))
+  (advice-add #'mu4e-compose-new :around #'my/mu4e-compose-disabled))

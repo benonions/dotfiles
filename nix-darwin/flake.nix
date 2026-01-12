@@ -38,7 +38,7 @@
             vim
             helix
             neovim
-
+            mb2md
             # Development tools
             nixd # Nix language server
             nixfmt
@@ -61,6 +61,10 @@
             skate
             soft-serve
             pandoc
+
+            luarocks
+            fennel
+            luajit
 
             # Terminal utilities
             ripgrep
@@ -111,7 +115,8 @@
             nmap
 
             # Email
-            mu
+            # mu
+            # emacsPackages.mu4e
           ];
 
           # Git configuration
@@ -490,6 +495,9 @@
           "firefoxpwa"
 
           "spotify_player"
+          "block-goose-cli"
+          "isync"
+          "mailutils"
         ];
 
         homebrew.taps = [
@@ -508,6 +516,9 @@
           "librewolf"
           "element"
           "signal"
+          "bruno"
+          "claude-code"
+          "codex"
         ];
       };
 
