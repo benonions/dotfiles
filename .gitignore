@@ -1,0 +1,3 @@
+# TPM-managed plugins (install with prefix + I)
+tmux/.tmux/plugins/*
+!tmux/.tmux/plugins/tpm
