@@ -19,10 +19,11 @@
 (package! org-jira)
 (package! kubernetes)
 
-(package! glab)
-(package! gtea)
-(package! gogs)
-(package! buck)
+;; Forge extensions for non-GitHub hosts - removed from MELPA as of 2025-01
+;; (package! glab)   ; GitLab
+;; (package! gtea)   ; Gitea
+;; (package! gogs)   ; Gogs
+;; (package! buck)   ; Bitbucket
 (package! verb)
 
 (package! smudge)
