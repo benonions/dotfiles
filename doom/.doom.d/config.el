@@ -95,12 +95,16 @@
 (setq org-roam-database-connector 'sqlite3) ;; use emacsql-sqlite3 binaryv
 (setq org-roam-directory (file-truename "~/org/notes"))
 
+(defun my/journal-file ()
+  "Return today's journal file path."
+  (expand-file-name (format-time-string "%Y-%m-%d.org") "~/org/journal/"))
+
 (after! org
   (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Tasks")
+        '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Inbox")
            "* TODO %?\n  %i\n  %a")
-          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-           "* %?\nEntered on %U\n  %i\n  %a"))))
+          ("j" "Journal" entry (file my/journal-file)
+           "* %U\n- What happened that I didn't expect?\n- Why did it happen?\n- What will I do about it?\n- What am I grateful for?\n\n%?"))))
 
 (org-roam-db-autosync-mode)
 (use-package! websocket
