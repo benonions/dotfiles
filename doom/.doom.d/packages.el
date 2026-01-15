@@ -3,9 +3,6 @@
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
-(package! llama
-  :recipe (:host github :repo "tarsius/llama"))
-
 (package! flycheck-golangci-lint
   :recipe (:host github :repo "weijiangan/flycheck-golangci-lint"))
 
@@ -40,13 +37,12 @@
                    "*.ti" ("terminfo/e" "terminfo/e/*")
                    ("terminfo/65" "terminfo/65/*")
                    ("integration" "integration/*")
-                   (:exclude ".dir-loocals.el" "*-tests.el"))))
+                   (:exclude ".dir-locals.el" "*-tests.el"))))
 
 (package! ox-jira)
-;; (package! copilot
-;;   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
-;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
-;; (package! some-package)
+
+(package! slack)
+(package! alert)
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:

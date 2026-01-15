@@ -17,10 +17,12 @@
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 (when (eq system-type 'darwin)
-  ;; Make sure we use Homebrew stuff, not MacPorts, inside Emacs.
+  ;; Make sure we use Homebrew and Nix paths inside Emacs.
   (setenv "PATH"
-          (concat "/opt/homebrew/bin:/opt/homebrew/sbin:"
+          (concat "/etc/profiles/per-user/ben/bin:"
+                  "/opt/homebrew/bin:/opt/homebrew/sbin:"
                   (getenv "PATH")))
+  (add-to-list 'exec-path "/etc/profiles/per-user/ben/bin")
   (add-to-list 'exec-path "/opt/homebrew/bin")
   (add-to-list 'exec-path "/opt/homebrew/sbin")
 
@@ -52,19 +54,6 @@
 (use-package! verb
   :commands verb-mode
   :mode ("\\.\\(http\\|rest\\)\\'" . verb-mode))
-;;; Apply transparency to all new frames
-                                        ;(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
-                                        ;
-;;; Apply transparency to current frame (esp. GUI startup)
-                                        ;(when (display-graphic-p)
-                                        ;  (set-frame-parameter (selected-frame) 'alpha '(90 . 90)))
-                                        ;
-;;; Ensure future frames also get transparency when using daemon
-                                        ;(add-hook 'after-make-frame-functions
-                                        ;          (lambda (f)
-                                        ;            (when (display-graphic-p f)
-                                        ;              (set-frame-parameter f 'alpha '(90 . 90)))))
-
 
 (doom/set-frame-opacity 95) ;; Set to 90% opacity (adjust as desired)
 ;; (set-frame-parameter nil 'alpha-background 90) ; For current frame
@@ -83,9 +72,11 @@
 ;; Run in future for any new frames (daemon mode)
 (add-hook 'after-make-frame-functions #'my/restore-transparency)
 
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+;; Line numbers configured below (display-line-numbers-type 'relative)
+
+;; PlantUML - point to nix-installed jar
+(setq plantuml-jar-path (expand-file-name "~/.local/lib/plantuml.jar"))
+(setq org-plantuml-jar-path (expand-file-name "~/.local/lib/plantuml.jar"))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -103,10 +94,14 @@
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Inbox")
            "* TODO %?\n  %i\n  %a")
+          ("s" "Slack" entry (file+headline "~/org/inbox.org" "Inbox")
+           "* %?\n  %a")
           ("j" "Journal" entry (file my/journal-file)
            "* %U\n- What happened that I didn't expect?\n- Why did it happen?\n- What will I do about it?\n- What am I grateful for?\n\n%?"))))
 
-(org-roam-db-autosync-mode)
+(after! org-roam
+  (org-roam-db-autosync-mode))
+
 (use-package! websocket
   :after org-roam)
 
@@ -163,18 +158,8 @@
   (require 'flycheck-golangci-lint)
   (flycheck-golangci-lint-setup))
 
-;; Optional: run only this checker for Go
-(after! go-mode
-  (setq flycheck-checker 'golangci-lint))
-;; accept completion from copilot and fallback to company
-;; (use-package! copilot
-;;   :hook (prog-mode . copilot-mode)
-;;   :bind (:map copilot-completion-map
-;;               ("<tab>" . 'copilot-accept-completion)
-;;               ("TAB" . 'copilot-accept-completion)
-;;               ("C-TAB" . 'copilot-accept-completion-by-word)
-;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
-;;
+;; Run golangci-lint for Go files only
+(add-hook 'go-mode-hook (lambda () (setq-local flycheck-checker 'golangci-lint)))
 
 (after! projectile
   ;; Only disable require-root for TRAMP (not globally)
@@ -220,42 +205,18 @@
 (after! eww
   (set-popup-rule! "^\\*eww\\*" :ignore t))
 
+;; IRC (Libera.Chat)
+;; To set up: 1) Register at https://libera.chat/guides/registration
+;;            2) pass insert irc/libera.chat (nick on line 1, password on line 2)
 (after! circe
-  ;; Function to fetch secrets via auth-source (Keychain or pass)
-  (defun my/fetch-password (&rest params)
-    (require 'auth-source)
-    (if-let* ((match (car (apply #'auth-source-search params)))
-              (secret (plist-get match :secret)))
-        (if (functionp secret) (funcall secret) secret)
-      (user-error "Password not found for %S" params)))
-
-  ;; Add your IRC server configuration
   (set-irc-server! "irc.libera.chat"
     '(:tls t
       :port 6697
-      :nick "myNick"
-      :sasl-username ,(+pass-get-user "irc/libera.chat") ;; if using pass
+      :nick "onionpatch"
+      :sasl-username ,(+pass-get-user "irc/libera.chat")
       :sasl-password ,(+pass-get-secret "irc/libera.chat")
-      :channels ("#emacs")))
-  )
+      :channels ("#emacs"))))
 (setq fancy-splash-image (concat doom-user-dir "splash.png"))
-
-(defun run-devspace-dev ()
-  "Open a vterm on the right at the Projectile project root and run 'devspace dev'."
-  (interactive)
-  (require 'projectile)
-  (require 'vterm)
-  (let* ((project-root (projectile-project-root))
-         (default-directory project-root)
-         (buffer-name "*vterm-devspace*"))
-    (unless project-root
-      (user-error "Not in a Projectile project"))
-    (let ((vterm-window (split-window (selected-window) nil 'right)))
-      (select-window vterm-window)
-      (let ((vterm-buffer (get-buffer-create buffer-name)))
-        (with-current-buffer (vterm vterm-buffer)
-          (vterm-send-string "devspace dev")
-          (vterm-send-return))))))
 
 (map! :map dap-mode-map
       :leader
@@ -307,9 +268,8 @@
 ;;   :after (consult-gh embark)
 ;;   :config (consult-gh-embark-mode +1))
 
-;; atomic-chrome for ghost-text
-;; (require 'atomic-chrome)
-(atomic-chrome-start-server)
+;; atomic-chrome for ghost-text (defer to avoid slowing startup)
+(add-hook 'emacs-startup-hook #'atomic-chrome-start-server)
 
 
 (after! org-jira
@@ -335,14 +295,14 @@
 (use-package! smudge
   :bind-keymap ("C-c ." . smudge-command-map)
   :custom
-  (smudge-oauth2-client-secret "5f396ae20ee941fe865ec0f514e324c9")
-  (smudge-oauth2-client-id "fa5f87a748f0410498056d2ca23e2b5f")
-  ;; optional: enable transient map for frequent commands
   (smudge-player-use-transient-map t)
   :config
-  ;; optional: display current song in mode line
-  (global-smudge-remote-mode)
-  )
+  (require 'auth-source)
+  (when-let ((auth (car (auth-source-search :host "spotify.com" :max 1))))
+    (setq smudge-oauth2-client-id (plist-get auth :user)
+          smudge-oauth2-client-secret (let ((secret (plist-get auth :secret)))
+                                        (if (functionp secret) (funcall secret) secret))))
+  (global-smudge-remote-mode))
 
 
 (after! mu4e
@@ -354,3 +314,48 @@
   (defun my/mu4e-compose-disabled (&rest _args)
     (user-error "Compose disabled; use Apple Mail"))
   (advice-add #'mu4e-compose-new :around #'my/mu4e-compose-disabled))
+
+;; Slack
+;; Requires cookie stored in url-cookie for websocket (see github issue #555)
+(use-package! slack
+  :commands (slack-start)
+  :init
+  (setq slack-buffer-emojify t
+        slack-prefer-current-team t)
+  :config
+  (let* ((token (auth-source-pick-first-password :host "slack.com"))
+         (cookie (auth-source-pick-first-password :host "slack.com-cookie"))
+         ;; Extract just xoxd-... part for url-cookie-store
+         (d-cookie (car (split-string cookie ";"))))
+    ;; Store d cookie for websocket
+    (url-cookie-store "d" d-cookie nil ".slack.com" "/" t)
+    (slack-register-team
+     :name "nep-au-hub"
+     :token token
+     :cookie cookie
+     :full-and-display-names t))
+
+  ;; Org integration - store links from slack buffers
+  (defun my/slack-get-message-at-point ()
+    "Get slack message text at point."
+    (when-let ((ts (get-text-property (point) 'ts)))
+      (buffer-substring-no-properties
+       (previous-single-property-change (1+ (point)) 'ts nil (point-min))
+       (next-single-property-change (point) 'ts nil (point-max)))))
+
+  (defun my/slack-store-link ()
+    "Store org link to current slack buffer/message."
+    (when (derived-mode-p 'slack-message-buffer-mode 'slack-thread-message-buffer-mode)
+      (let* ((room (slack-buffer-room slack-current-buffer))
+             (team (slack-buffer-team slack-current-buffer))
+             (room-name (slack-room-name room team))
+             (msg (string-trim (or (my/slack-get-message-at-point) "")))
+             (desc (if (> (length msg) 50)
+                       (concat (substring msg 0 47) "...")
+                     msg)))
+        (org-link-store-props
+         :type "slack"
+         :link (format "slack:%s" room-name)
+         :description (format "Slack: #%s - %s" room-name desc)))))
+
+  (org-link-set-parameters "slack" :store #'my/slack-store-link))

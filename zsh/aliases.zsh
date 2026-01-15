@@ -48,8 +48,11 @@ alias delip="sudo ifconfig en0 delete 10.10.121.2"
 alias fixrd="sudo ln -s ~$USER/.rd/docker.sock /var/run/docker.sock"
 alias wabbit="nerdctl run -p 5672:5672 -d --hostname wabbit --name wabbit  rabbitmq:3-management"
 
-alias rebuild-emacs="doom sync --rebuild && brew services restart emacs-plus@31"
-alias restart-emacs="brew services restart emacs-plus@31"
+# Emacs (nix-darwin launchctl service)
+alias estop="launchctl stop org.nixos.emacs"
+alias estart="launchctl start org.nixos.emacs"
+alias erestart="launchctl stop org.nixos.emacs && launchctl start org.nixos.emacs"
+alias rebuild-emacs="doom sync --rebuild && erestart"
 
 # Run all benchmarks with memory stats, skip tests
 alias gobench='go test -bench . -benchmem -run ^$'

@@ -39,6 +39,7 @@
             helix
             neovim
             mb2md
+            age
             # Development tools
             nixd # Nix language server
             nixfmt
@@ -117,6 +118,21 @@
             # Email
             # mu
             # emacsPackages.mu4e
+
+            # Emacs/Doom tooling
+            shellcheck
+            shfmt
+            editorconfig-core-c
+            imagemagick
+            clang-tools
+            terraform
+            zig
+            clj-kondo
+            dockfmt
+            cljfmt
+            erlfmt
+            rebar3
+            plantuml
           ];
 
           # Git configuration
@@ -257,6 +273,9 @@
 
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";
+
+        # Allow unfree packages (e.g., terraform)
+        nixpkgs.config.allowUnfree = true;
 
         # ========================================
         # MACOS SYSTEM DEFAULTS
@@ -498,6 +517,12 @@
           "block-goose-cli"
           "isync"
           "mailutils"
+
+          # Emacs/Doom tooling
+          "pngpaste"
+          "grip"
+          "php"
+          "composer"
         ];
 
         homebrew.taps = [
@@ -519,6 +544,8 @@
           "bruno"
           "claude-code"
           "codex"
+          "1password-cli"
+
         ];
       };
 

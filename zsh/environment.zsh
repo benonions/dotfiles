@@ -6,7 +6,13 @@ export SOPS_AGE_KEY_FILE="$HOME/.sops/key.txt"
 
 # Security check for sensitive files
 if [[ -f "$SOPS_AGE_KEY_FILE" ]]; then
-  if [[ "$(stat -f '%Lp' "$SOPS_AGE_KEY_FILE" 2>/dev/null)" != "600" ]]; then
+  # Use BSD stat on macOS, GNU stat elsewhere
+  if [[ "$OSTYPE" == darwin* ]]; then
+    perms=$(/usr/bin/stat -f '%Lp' "$SOPS_AGE_KEY_FILE" 2>/dev/null)
+  else
+    perms=$(stat -c '%a' "$SOPS_AGE_KEY_FILE" 2>/dev/null)
+  fi
+  if [[ "$perms" != "600" ]]; then
     echo "WARNING: $SOPS_AGE_KEY_FILE has insecure permissions. Run: chmod 600 $SOPS_AGE_KEY_FILE" >&2
   fi
 fi
