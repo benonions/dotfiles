@@ -1,37 +1,20 @@
-# Work-specific functions
-
-# OpenConnect VPN helpers
-openconnectnlPass() {
-  security find-generic-password -w -a 'Benjamin.Onions' -s 'NL VPN' | pbcopy
-  echo "Password copied to clipboard (will clear in 45 seconds)" >&2
-  ( sleep 45 && echo -n | pbcopy && echo "Clipboard cleared" >&2 ) &
-}
-
-openconnectnl() {
-  openconnect remote.nepworldwide.nl --passwd-on-stdin --protocol=nc --user=Benjamin.Onions
-}
-
-# GitHub repository search
-whatreposwillibreakifichange() {
-  SEARCH_STRING="$1"
-  
-  if [ -z "$SEARCH_STRING" ]; then
-    echo "Usage: blah <SEARCH_STRING>"
-    return 1
-  fi
-
-  gh search code --owner=nepgpe --language=go "$SEARCH_STRING" -L 1000 --json repository | jq '.[].repository.url' | sort | uniq
-}
-
-# Pulse Secure restart
-restart_pulse() {
-  sudo launchctl unload -w /Library/LaunchDaemons/net.pulsesecure.AccessService.plist
-  sudo launchctl load -w /Library/LaunchDaemons/net.pulsesecure.AccessService.plist
-}
-
-# Cisco switch password helper
-getCiscoPass() {
-  security find-generic-password -s cisco_switch -w | pbcopy
-  echo "Password copied to clipboard (will clear in 45 seconds)" >&2
-  ( sleep 45 && echo -n | pbcopy && echo "Clipboard cleared" >&2 ) &
+{
+	"data": "ENC[AES256_GCM,data:oX5wVaPAy7jdggXL9QdNXWR9Xh9lRoJYZ3CIIrTudQTUyBPqkM8t63AwV/11bIvrdb1VlHT29U3o6Tf51B6rpH0PueyfjpFNv4Is7YRuRJHHpiAxpU+cIfcSbdOpd9uplotrPNyH+pn7KIrVkru9s60vwhjCuqA8k6147gy0jlJqT/P2F8mMJt4SIT8Zj9QFMD4BMLHkv1lJkpXw3+dAJcQNZ6e3W7bJKN8Db5nv1CDW513wF9quMAHDXaq6OP8QjLzKWbV9sfU6hOdNtZgJpQ5RiLD6G2OmMYE5X4WKfme8bjl6Wbjmz0ZyjM/J/RgWSf2Zkw4wtcp2JwfyqE6q2707KmTCzoplTAeGQj0DCVlQJ4U4ZTMUTzQS9NJ6AwYqWHoZJ0nrdPRzwHls5QdPMYhcuLEYSgEh5ftfYnDoDre2PlaRt3xEhSWv6jK87e4J08xEGSenh3gO67O61oc8RjFjllbhx88ZJlspEKEldzuMZq7CKZdxxJr+nHoZMSld1Ds5VpDZUYjktjxmITXGed0BfbsMMH2PEBn8sk6DRohKCuZNrl+1XUv3+MP7rvUXAGU/NG5WvNJ83bUkMOK22TLZZKrkvGyKQOCkbUA6tbTuqIXOIj1YTr5it1AoB9xgKIiHtZe3B/LLRhYm/2zoIyWGSWFyJWpqoHhJpJi03FZOXEA+7yjYx4w3DxWl0MN4go2t0uV9FNSZmCTR7eev2ndnb1c5GOjNyPhQCWvDEwZyvSiLzJ4MzVBAxxyTs0pNPzupR5TaPeOhC7NIR3mdRi2t293xKgtdAde0VbDR75XT1EWT54mxFBawAQZg+K7MKUCeEn4IQwp9vC4Pr4aNUEpQ1aqzKtl7+AsrIMl1TdibAx0DMVWaxc3AqzkbXHNAtEvSZlTEcB4wRM2rIPuznPauvKptUJxZihkMVGScwY8t3MkSyiaNhqTGhHXbXTVBYCG3GNmWZtvQfYViq4y7ZESHqHIWpdBaR0aid5RmCdxN/9uuwwbdY56JdeDVCmSnIOqdklESN0AsWTVGJdUgI2Kh8BLIcqLRB7Au1WDr5GidHhDRjtxG8KrZ/66tzsbxsMFrx7cLYNWSzBZ4SvmvXmRNR9sh0JFq18zWnPw6BrmQ/jjv/rL0qjx/DeyayvcKld6xn07v/spp0gdny3FH/lcwulD5DG8QpiJjzCVAttF2dffTF1ffxgcQ8oCS6q6EmauP+w7FZvAQ9UWml/gtW4UezpLZtqrT7oSENlhPnnbRPpZQB4uA1Wls6nq/iHGyv7SDiyoYbRC8NDCH9oTLFmtbaEqXCWfL7fQT5NLufWivUrBhkc+pmhK2tPt3zpEu3ixr6y0F+2c+I+lggkU8RNO8kUpzQZyNMow2BxkNktCfhnEMJ9e/wnMneHW4iwwHAHdQJRWyh11kpq+bArRmuxR37eN+zCBADxvh5oilAIoEBzmGJUDVI5EmCMuiVWmYzocQnaxb6VCQ7iMJfK09eVEOdy9OVepfOGLY71irSKn0BrV3O1XEnlX5pXMaqNj63P3tlgrHa6BgAy04Y0oAd3wOKqEFHhb+oaM=,iv:m/1pGpEkSy3byJNZiJuhMyETDTEj1n/Wt/UNMwd/c9E=,tag:bpDfC6E9xqPeTEUJruXaGg==,type:str]",
+	"sops": {
+		"kms": null,
+		"gcp_kms": null,
+		"azure_kv": null,
+		"hc_vault": null,
+		"age": [
+			{
+				"recipient": "age1uku8aqrvqfd5yankx2s4nwurylyvxq9xv5nd437jk0c7ln2x9daq2fc40x",
+				"enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAwQTV1dzcrR1hwMGphOGlI\nV1BlZ1RYL252RVNCUzdSdUtVRmc2UHUzVzBzCktTQ1EycjN5bjlnbjhLOXFCbENG\nVEpWcXByMU9kdmNoa1hBcDA2bExGeXcKLS0tIEplTkw5Ty8ybERYWUUrMStsWVBL\nRFFQcWxKWTBOUHNKZDc0VE95SjNLekUK+IhPvMO2w+vyBAOrpgCD2OFTCQGQiYna\nG54A6ayNeIDT3GZLM5YwYqpu5vbObGSu5D1F1F5zw5LZPLh8f9g5FQ==\n-----END AGE ENCRYPTED FILE-----\n"
+			}
+		],
+		"lastmodified": "2026-01-15T22:46:21Z",
+		"mac": "ENC[AES256_GCM,data:fSmBZkytiTGg1mEPKqnJvhiwa5+u5IeHKYj/22HxcPnCCbrxh+ljyvPctEXOGk+3cbzcE7ljriUxVXU+mUtSPMyoZMzjI5dAm0+SaeoEqueOQ/ryUjy1WUbCQ8kRN/651kay5MyWvU0ZHV6Dr7pIcn8/qGhB3XqKF98yjzF3QIg=,iv:zpyPEP+gTbuFMeHPz4goEr//OKT9Z4Mf5ZxcX9O8MzE=,tag:0zaujRvUlsNkTelGduEPyw==,type:str]",
+		"pgp": null,
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.8.1"
+	}
 }

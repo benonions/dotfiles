@@ -31,8 +31,36 @@ alias kdd="kubectl describe deployment"
 alias stern="kubectl stern"
 alias get-deployment='mkdir -p deploy && kubectl get $(kubectl get deployments -o name | fzf) -o yaml > deploy/deployment.yaml'
 
-# Home Manager
-alias hms="home-manager switch"
+# Nix
+nrs() {
+  if [[ "$OSTYPE" == darwin* ]]; then
+    sudo darwin-rebuild switch --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+  elif [[ -f /etc/NIXOS ]]; then
+    sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"
+  else
+    home-manager switch --flake ~/.dotfiles#"$USER"
+  fi
+}
+
+nrb() {
+  if [[ "$OSTYPE" == darwin* ]]; then
+    darwin-rebuild build --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+  elif [[ -f /etc/NIXOS ]]; then
+    nixos-rebuild build --flake ~/.dotfiles#"$(hostname -s)"
+  else
+    home-manager build --flake ~/.dotfiles#"$USER"
+  fi
+}
+
+nrt() {
+  if [[ "$OSTYPE" == darwin* ]]; then
+    sudo darwin-rebuild check --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+  elif [[ -f /etc/NIXOS ]]; then
+    sudo nixos-rebuild dry-activate --flake ~/.dotfiles#"$(hostname -s)"
+  else
+    home-manager build --flake ~/.dotfiles#"$USER" --dry-run
+  fi
+}
 
 #read local http 
 alias reader="python3 -m http.server 8086"

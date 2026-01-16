@@ -1,9 +1,22 @@
-#!/usr/bin/env zsh
-pushd $DOTFILES
-for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
-do
-    echo "stow $folder"
-    stow -D $folder
-    stow $folder
+#!/usr/bin/env bash
+# Auto-detect and stow dotfile folders
+
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+cd "$DOTFILES" || exit 1
+
+# Folders to exclude from stowing
+exclude=(nix-darwin scripts wallpapers .git .claude)
+
+for dir in */; do
+  dir="${dir%/}"
+
+  # Skip excluded folders
+  [[ " ${exclude[*]} " =~ " ${dir} " ]] && continue
+
+  # Only stow if contains .config/ or dotfiles
+  if [[ -d "$dir/.config" ]] || ls -A "$dir" 2>/dev/null | grep -q '^\.' ; then
+    echo "stow $dir"
+    stow -D "$dir" 2>/dev/null
+    stow "$dir"
+  fi
 done
-popd

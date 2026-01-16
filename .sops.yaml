@@ -1,3 +1,3 @@
 creation_rules:
-  - path_regex: \.enc\.zsh$
-    age: age1...
+  - path_regex: zsh/work\.zsh$
+    age: age1uku8aqrvqfd5yankx2s4nwurylyvxq9xv5nd437jk0c7ln2x9daq2fc40x

@@ -17,39 +17,34 @@ if [[ -f "$SOPS_AGE_KEY_FILE" ]]; then
   fi
 fi
 
-export ZK_NOTEBOOK_DIR="/Users/ben/Dropbox/MyBrain"
-export XDG_CONFIG_HOME="/Users/ben/.config"
+export ZK_NOTEBOOK_DIR="$HOME/Dropbox/MyBrain"
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # Go environment
 export GOPATH="$HOME/go"
 export GOROOT=/usr/local/go
 export TERM="screen-256color"
 
-# PATH configuration
-# Ensure PATH doesn't contain duplicates
-typeset -U PATH path
-
-export PATH="$HOME/.local/bin/:$PATH"
-export PATH="/usr/local/bin:$PATH"
-export PATH="$HOME/.ansible/scripts/:$PATH"
-export PATH="$HOME/.krew/bin:$PATH"
-export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.rd/bin:$PATH"
-export PATH="$HOME/development/flutter/bin:$PATH"
-export PATH="$HOME/.emacs.d/bin:$PATH"
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$GOROOT/bin:$PATH
-export PATH=~/.asdf/shims:$PATH
 # pnpm
-export PNPM_HOME="/Users/ben/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+export PNPM_HOME="$HOME/Library/pnpm"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/ben/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+# PATH configuration
+typeset -U PATH path
+
+path=(
+  $HOME/.local/bin
+  /usr/local/bin
+  $HOME/.ansible/scripts
+  $HOME/.krew/bin
+  $GOPATH/bin
+  $GOROOT/bin
+  $HOME/.rd/bin
+  $HOME/development/flutter/bin
+  $HOME/.emacs.d/bin
+  $HOME/.asdf/shims
+  $PNPM_HOME
+  $path
+)

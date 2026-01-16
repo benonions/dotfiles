@@ -28,7 +28,7 @@ command -v direnv >/dev/null 2>&1 && eval "$(command direnv hook zsh)"
 # alias npm='unalias npm; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npm'
 
 # Google Cloud SDK path
-if [ -f '/Users/ben/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ben/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
 
 # opam configuration
-[[ ! -r /Users/ben/.opam/opam-init/init.zsh ]] || source /Users/ben/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null

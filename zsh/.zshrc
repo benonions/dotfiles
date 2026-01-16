@@ -3,9 +3,14 @@
 
 DOTFILES_ZSH_DIR="$HOME/.dotfiles/zsh"
 
-for config in environment aliases functions completions integrations work; do
+for config in environment aliases functions completions integrations; do
   [[ -f "$DOTFILES_ZSH_DIR/$config.zsh" ]] && source "$DOTFILES_ZSH_DIR/$config.zsh"
 done
+
+# Decrypt and source work config (SOPS encrypted)
+if [[ -f "$DOTFILES_ZSH_DIR/work.zsh" ]] && command -v sops &>/dev/null; then
+  source <(sops -d "$DOTFILES_ZSH_DIR/work.zsh" 2>/dev/null)
+fi
 
 # Load local configuration (not tracked in git)
 [[ -f "$DOTFILES_ZSH_DIR/local.zsh" ]] && source "$DOTFILES_ZSH_DIR/local.zsh"
@@ -18,9 +23,6 @@ export NVM_DIR="$HOME/.config/nvm"
 
 # AsyncAPI CLI Autocomplete
 
-ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/ben/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup && test -f $ASYNCAPI_AC_ZSH_SETUP_PATH && source $ASYNCAPI_AC_ZSH_SETUP_PATH; # asyncapi autocomplete setup
+ASYNCAPI_AC_ZSH_SETUP_PATH="$HOME/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup" && test -f "$ASYNCAPI_AC_ZSH_SETUP_PATH" && source "$ASYNCAPI_AC_ZSH_SETUP_PATH"
 autoload -U compinit; compinit
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/ben/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

@@ -1,7 +1,0 @@
-# ================================ APPS ================================
-alt - return : open -a ghostty
-alt - w : open -a /Applications/Google\ Chrome.app
-alt - f : open -a /Applications/Firefox.app 
-alt - s : open -a /Applications/Slack.app
-alt - m : open -a /Applications/Spotify.app
-alt - l : open -a /Applications/Logseq.app
