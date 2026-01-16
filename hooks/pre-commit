@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Pre-commit hook: scan for secrets with gitleaks
+
+if ! command -v gitleaks &>/dev/null; then
+  echo "gitleaks not found, skipping secrets scan"
+  exit 0
+fi
+
+gitleaks protect --staged --verbose

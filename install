@@ -60,3 +60,9 @@ if [[ -x "$DOOM_DIR/bin/doom" ]]; then
   echo "Syncing Doom Emacs..."
   "$DOOM_DIR/bin/doom" sync
 fi
+
+# Install git hooks
+if [[ -d "$DOTFILES/hooks" ]]; then
+  echo "Installing git hooks..."
+  ln -sf "$DOTFILES/hooks/pre-commit" "$DOTFILES/.git/hooks/pre-commit"
+fi

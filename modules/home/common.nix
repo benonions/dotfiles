@@ -81,6 +81,7 @@
 
     # Security
     yubikey-agent
+    gitleaks
 
     # Network tools
     speedtest-cli
