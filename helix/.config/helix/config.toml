@@ -1,10 +1,9 @@
-theme = "dracula_transparent"
-
+theme = "dracula"
 
 #Editor
 [editor]
 line-number = "relative"
-mouse = false 
+mouse = false
 bufferline = "multiple"
 gutters = ["diagnostics", "spacer", "line-numbers", "spacer", "diff"]
 
@@ -12,7 +11,7 @@ gutters = ["diagnostics", "spacer", "line-numbers", "spacer", "diff"]
 insert = "bar"
 
 [editor.file-picker]
-hidden = false 
+hidden = false
 
 [editor.lsp]
 display-messages = true

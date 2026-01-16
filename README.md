@@ -2,55 +2,76 @@
 
 Personal dotfiles using a hybrid **Nix + Stow** approach for cross-platform configuration.
 
-## Prerequisites
+## Fresh Machine Bootstrap
 
-- [Git](https://git-scm.com/)
-- [Nix](https://nixos.org/) (with flakes enabled)
-- [home-manager](https://github.com/nix-community/home-manager)
-- [zsh](https://www.zsh.org/)
-- [GNU Stow](https://www.gnu.org/software/stow/)
+### 1. Install Nix
 
-## Installation
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
 
-Clone to `~/.dotfiles`:
+### 2. Clone dotfiles
 
 ```bash
 git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ```
 
-### macOS (nix-darwin)
+### 3. Get secrets from 1Password
 
 ```bash
-darwin-rebuild switch --flake .#<hostname>
+mkdir -p ~/.sops
+op read "op://Private/dotfiles age key/notesPlain" > ~/.sops/key.txt
+chmod 600 ~/.sops/key.txt
 ```
 
-### NixOS
+### 4. Apply Nix config
+
+This installs all packages (including stow, sops) and configures the system.
 
 ```bash
-nixos-rebuild switch --flake .#<hostname>
+# macOS (installs nix-darwin + applies config)
+nix run nix-darwin -- switch --flake ~/.dotfiles#$(scutil --get LocalHostName)
+
+# Ubuntu (standalone home-manager)
+nix run home-manager/release-25.05 -- switch --flake ~/.dotfiles#$USER
+
+# NixOS
+sudo nixos-rebuild switch --flake ~/.dotfiles#$(hostname -s)
 ```
 
-### Ubuntu (standalone home-manager)
+### 5. Stow configs + decrypt secrets
 
 ```bash
-home-manager switch --flake .#<username>
+./install
 ```
 
-### Stow configs
+After this step, the `nrs`/`nrb`/`nrt` aliases are available for daily use.
 
-For any platform, stow individual app configs:
+### 6. Post-install
 
-```bash
-cd ~/.dotfiles
-stow nvim tmux zsh starship  # etc.
-```
+- Open a new terminal to load zsh config
+- Tmux plugins are installed automatically by `./install`
 
-### Post-install
+## Daily Usage
 
-First-time tmux setup - install plugins with `prefix + I` (Ctrl-b + I).
+| Command | What it does |
+|---------|--------------|
+| `nrs` | Nix rebuild switch (auto-detects OS) |
+| `nrb` | Nix rebuild build (test without switching) |
+| `nrt` | Nix rebuild test (dry-run) |
+| `./install` | Re-stow configs + decrypt secrets |
 
 ## Architecture
+
+```
+flake.nix                    # Root flake for all platforms
+modules/
+  home/common.nix            # Shared packages (all platforms)
+  home/darwin.nix            # macOS-specific
+  home/linux.nix             # Linux-specific
+  darwin/configuration.nix   # macOS system config + Homebrew
+```
 
 | Layer | Platform | Purpose |
 |-------|----------|---------|
@@ -79,7 +100,10 @@ Configs like nvim, tmux, and zsh use Stow instead of home-manager because:
 
 ## Machine Configs
 
-macOS machines are defined in `nix-darwin/flake.nix`.
+Defined in `flake.nix`:
+- `darwinConfigurations.Benjamins-MacBook-Pro-2`
+- `darwinConfigurations.Bens-BlackBook-Pro`
+- `homeConfigurations.ben` (Ubuntu/Linux standalone)
 
 ## License
 

@@ -6,6 +6,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 
 default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
+on-focus-changed = 'move-mouse window-lazy-center'
 
 [mode.main.binding]
 cmd-enter = 'exec-and-forget open -n /Applications/Ghostty.app'
@@ -13,6 +14,7 @@ cmd-e = 'exec-and-forget /run/current-system/sw/bin/emacsclient -c -n'
 
 alt-m = 'exec-and-forget open -n /Applications/Spotify.app'
 alt-h = 'focus left'
+alt-d = 'exec-and-forget open -n /Applications/doom.app'
 alt-j = 'focus down'
 alt-k = 'focus up'
 alt-l = 'focus right'
@@ -82,13 +84,20 @@ outer.top = 5
 outer.right = 5
 
 [workspace-to-monitor-force-assignment]
-1 = ['DELL P2721Q', 'Q27q-10'] 
-2 = ['DELL P2721Q', 'Q27q-10'] 
-3 = ['DELL P2721Q', 'Q27q-10'] 
-4 = ['DELL P2721Q', 'Q27q-1L'] 
-5 = ['DELL P2721Q', 'Q27q-1L'] 
+1 = ['DELL P2721Q', 'Q27q-10']
+2 = ['DELL P2721Q', 'Q27q-10']
+3 = ['DELL P2721Q', 'Q27q-10']
+4 = ['DELL P2721Q', 'Q27q-1L']
+5 = ['DELL P2721Q', 'Q27q-1L']
 6 = ['Built-in Display', 'Built-in Retina Display']
 7 = ['Built-in Display', 'Built-in Retina Display']
 8 = ['Built-in Display', 'Built-in Retina Display']
 9 = ['Built-in Display', 'Built-in Retina Display']
 10 = ['Built-in Display', 'Built-in Retina Display']
+
+
+# [[on-window-detected]]
+# if.app-id = 'com.mitchellh.ghostty'
+# run = 'move-node-to-workspace 2'
+#
+#

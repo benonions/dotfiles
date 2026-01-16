@@ -17,6 +17,46 @@ for dir in */; do
   if [[ -d "$dir/.config" ]] || ls -A "$dir" 2>/dev/null | grep -q '^\.' ; then
     echo "stow $dir"
     stow -D "$dir" 2>/dev/null
+    # Force: delete conflicting real files so stow can create symlinks
+    stow -n "$dir" 2>&1 | grep "existing target" | sed 's/.*over existing target //' | sed 's/ since.*//' | while read -r conflict; do
+      [[ -f "$HOME/$conflict" && ! -L "$HOME/$conflict" ]] && rm -f "$HOME/$conflict"
+    done
     stow "$dir"
   fi
 done
+
+# Decrypt secrets (if sops available and key exists)
+if command -v sops &>/dev/null && [[ -f "$HOME/.sops/key.txt" ]]; then
+  echo "Decrypting secrets..."
+
+  # authinfo → ~/.authinfo
+  [[ -f "$DOTFILES/secrets/authinfo" ]] && \
+    sops -d "$DOTFILES/secrets/authinfo" > "$HOME/.authinfo" && \
+    chmod 600 "$HOME/.authinfo" && \
+    echo "  → ~/.authinfo"
+else
+  echo "Skipping secrets (sops not available or key missing)"
+fi
+
+# Install tmux plugins via TPM
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$TPM_DIR" ]]; then
+  echo "Installing TPM..."
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+if [[ -x "$TPM_DIR/bin/install_plugins" ]]; then
+  echo "Installing tmux plugins..."
+  "$TPM_DIR/bin/install_plugins"
+fi
+
+# Install Doom Emacs
+DOOM_DIR="$HOME/.emacs.d"
+if [[ ! -d "$DOOM_DIR" ]]; then
+  echo "Installing Doom Emacs..."
+  git clone --depth 1 https://github.com/doomemacs/doomemacs "$DOOM_DIR"
+  "$DOOM_DIR/bin/doom" install --no-config --no-env --no-fonts
+fi
+if [[ -x "$DOOM_DIR/bin/doom" ]]; then
+  echo "Syncing Doom Emacs..."
+  "$DOOM_DIR/bin/doom" sync
+fi
