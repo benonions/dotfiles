@@ -17,6 +17,8 @@
     rustup
     elixir
     nodejs
+    nodePackages.pnpm
+    yarn
     python312
     pipx
     direnv
