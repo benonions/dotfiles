@@ -96,8 +96,8 @@ outer.right = 5
 10 = ['Built-in Display', 'Built-in Retina Display']
 
 
-# [[on-window-detected]]
-# if.app-id = 'com.mitchellh.ghostty'
-# run = 'move-node-to-workspace 2'
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 2'
 #
 #

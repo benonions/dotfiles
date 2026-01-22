@@ -34,12 +34,8 @@
   (setenv "PKG_CONFIG_PATH"
           "/opt/homebrew/lib/pkgconfig:/opt/homebrew/share/pkgconfig"))
 
-(after! eglot
-  (add-to-list 'eglot-server-programs
-               '(lua-mode . ("lua-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs
-               '(lua-ts-mode . ("lua-language-server" "--stdio")))
-  )
+
+
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
@@ -160,14 +156,8 @@
 
 (after! flycheck
   (require 'flycheck-golangci-lint)
-  (flycheck-golangci-lint-setup)
+  (flycheck-golangci-lint-setup))
 
-  ;; golangci-lint v2 doesn't support --out-format
-  (defun ben/flycheck-golangci-lint--output-format-flags ()
-    (list "--output.checkstyle.path=stdout"))
-
-  (advice-add 'flycheck-golangci-lint--output-format-flags
-              :override #'ben/flycheck-golangci-lint--output-format-flags))
 ;; Run golangci-lint for Go files only
 (add-hook 'go-mode-hook (lambda () (setq-local flycheck-checker 'golangci-lint)))
 

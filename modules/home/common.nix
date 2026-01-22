@@ -38,6 +38,7 @@
     luarocks
     fennel
     luajit
+    lua-language-server
 
     # Terminal utilities
     ripgrep

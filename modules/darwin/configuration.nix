@@ -114,13 +114,13 @@
 
     # AI tools
     "block-goose-cli"
+
+    # Music 
+    "mpd"
   ];
 
-  homebrew.taps = [
-    "nikitabobko/tap"
-    "d12frosted/emacs-plus"
-    "atlassian/homebrew-acli"
-  ];
+  homebrew.taps =
+    [ "nikitabobko/tap" "d12frosted/emacs-plus" "atlassian/homebrew-acli" ];
 
   homebrew.casks = [
     # Window management & productivity
@@ -128,6 +128,7 @@
     "raycast"
     "jordanbaird-ice"
     "hammerspoon"
+    "multipass"
 
     # Terminal
     "ghostty"

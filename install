@@ -7,11 +7,19 @@ cd "$DOTFILES" || exit 1
 # Folders to exclude from stowing
 exclude=(nix-darwin scripts wallpapers .git .claude)
 
+# Mac-only packages (only stow on Darwin)
+mac_only=(hammerspoon aerospace)
+
 for dir in */; do
   dir="${dir%/}"
 
   # Skip excluded folders
   [[ " ${exclude[*]} " =~ " ${dir} " ]] && continue
+
+  # Skip mac-only packages on non-Darwin systems
+  if [[ " ${mac_only[*]} " =~ " ${dir} " ]] && [[ "$(uname)" != "Darwin" ]]; then
+    continue
+  fi
 
   # Only stow if contains .config/ or dotfiles
   if [[ -d "$dir/.config" ]] || ls -A "$dir" 2>/dev/null | grep -q '^\.' ; then
