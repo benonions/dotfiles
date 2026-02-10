@@ -1,4 +1,9 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Dashboard splash — must be set before doom-init-ui-hook
+(setq +doom-dashboard-banner-file "splash.png"
+      +doom-dashboard-banner-dir doom-user-dir)
+
 (add-to-list 'load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e")
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -17,19 +22,22 @@
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 (when (eq system-type 'darwin)
-  ;; Make sure we use Homebrew and Nix paths inside Emacs.
-  (setenv "PATH"
-          (concat "/etc/profiles/per-user/ben/bin:"
-                  "/opt/homebrew/bin:/opt/homebrew/sbin:"
-                  (getenv "PATH")))
-  (add-to-list 'exec-path "/etc/profiles/per-user/ben/bin")
-  (add-to-list 'exec-path "/opt/homebrew/bin")
-  (add-to-list 'exec-path "/opt/homebrew/sbin")
+  ;; Grab the real PATH from a login shell so Emacs sees everything
+  ;; (Nix, Homebrew, Go, asdf, pnpm, krew, etc.) without hardcoding.
+  (let ((shell-path (string-trim
+                     (shell-command-to-string
+                      "$SHELL -l -i -c 'echo $PATH' 2>/dev/null"))))
+    (setenv "PATH" shell-path)
+    (setq exec-path (append (parse-colon-path shell-path) (list exec-directory))))
+
+  ;; nix-darwin's /etc/zshenv hard-resets PATH for every zsh subprocess,
+  ;; clobbering whatever Emacs sets. Use /bin/sh for compilation and shell
+  ;; commands so they inherit Emacs's PATH directly.
+  (setq shell-file-name "/bin/sh")
 
   ;; Force use of Homebrew pkg-config
   (setenv "PKG_CONFIG" "/opt/homebrew/bin/pkg-config")
 
-  ;; *** This is the important bit ***
   ;; Overwrite any MacPorts PKG_CONFIG_PATH with Homebrew's pc dirs.
   (setenv "PKG_CONFIG_PATH"
           "/opt/homebrew/lib/pkgconfig:/opt/homebrew/share/pkgconfig"))
@@ -167,29 +175,96 @@
     (list "--output.checkstyle.path=stdout"))
 
   (advice-add 'flycheck-golangci-lint--output-format-flags
-              :override #'ben/flycheck-golangci-lint--output-format-flags))
+              :override #'ben/flycheck-golangci-lint--output-format-flags)
+
+  ;; Suppress "suspicious" message for golangci-lint build constraint errors.
+  ;; Exit code 7 with "build constraints exclude all Go files" isn't a real problem -
+  ;; it just means the directory has Go files that don't match current GOOS/GOARCH.
+  (defvar ben/flycheck-last-golangci-output nil)
+
+  (advice-add 'flycheck-receive-checker-output
+              :after (lambda (process output)
+                       (when (eq (process-get process 'flycheck-checker) 'golangci-lint)
+                         (setq ben/flycheck-last-golangci-output output))))
+
+  (advice-add 'flycheck-report-status
+              :around
+              (lambda (orig-fn status)
+                (if (and (eq status 'suspicious)
+                         (bound-and-true-p flycheck-checker)
+                         (eq flycheck-checker 'golangci-lint)
+                         ben/flycheck-last-golangci-output
+                         (string-match-p "build constraints exclude all Go files"
+                                         ben/flycheck-last-golangci-output))
+                    ;; Silently finish instead of reporting suspicious
+                    (funcall orig-fn 'finished)
+                  (funcall orig-fn status)))))
 ;; Run golangci-lint for Go files only
 (add-hook 'go-mode-hook (lambda () (setq-local flycheck-checker 'golangci-lint)))
 
-(after! projectile
-  ;; Only disable require-root for TRAMP (not globally)
-  (setq projectile-indexing-method 'alien
-        projectile-enable-caching t)
+;; Semgrep: security + best-practice linting (polyglot)
+;; Uses `--config auto` which selects community rules by detected language.
+;; First run downloads rules from the registry (cached afterward).
+;; To use specific rulesets instead, replace "auto" with e.g.:
+;;   "p/owasp-top-ten" "p/secrets" "p/golang" "p/typescript"
+(after! flycheck
+  (defun ben/flycheck-parse-semgrep (output checker buffer)
+    "Parse semgrep JSON OUTPUT for CHECKER and BUFFER."
+    (when (> (length output) 0)
+      (let* ((json-object-type 'alist)
+             (json-array-type 'list)
+             (data (condition-case nil
+                       (json-read-from-string output)
+                     (error nil)))
+             (results (alist-get 'results data)))
+        (mapcar
+         (lambda (result)
+           (let* ((start (alist-get 'start result))
+                  (extra (alist-get 'extra result))
+                  (line (alist-get 'line start))
+                  (col (alist-get 'col start))
+                  (message (alist-get 'message extra))
+                  (severity (alist-get 'severity extra))
+                  (check-id (alist-get 'check_id result))
+                  (level (pcase severity
+                           ("ERROR" 'error)
+                           ("WARNING" 'warning)
+                           (_ 'info))))
+             (flycheck-error-new-at
+              line col level
+              (format "[%s] %s" check-id message)
+              :checker checker
+              :buffer buffer)))
+         results))))
 
-  (setq projectile-project-search-path
-        '("~/code/"
-          "~/org"
-          "~/.dotfiles/"
-          ))
-  ;; Ignore vendor
+  (flycheck-define-checker semgrep
+    "Security and best-practice linter using semgrep."
+    :command ("semgrep" "scan" "--json" "--quiet"
+              "--disable-version-check" "--config" "auto"
+              source-inplace)
+    :error-parser ben/flycheck-parse-semgrep
+    :modes (go-mode go-ts-mode
+            typescript-mode typescript-ts-mode tsx-ts-mode
+            js-mode js2-mode js-ts-mode
+            python-mode python-ts-mode))
+
+  (add-to-list 'flycheck-checkers 'semgrep t)
+  ;; Chain after golangci-lint for Go files
+  (flycheck-add-next-checker 'golangci-lint '(warning . semgrep))
+  ;; Chain after lsp for other languages (lsp checker may not exist yet)
+  (when (flycheck-valid-checker-p 'lsp)
+    (flycheck-add-next-checker 'lsp '(warning . semgrep))))
+
+(after! projectile
+  (setq projectile-indexing-method 'alien
+        projectile-enable-caching t
+        projectile-project-search-path '(("~/code/" . 4)))
+
   (add-to-list 'projectile-globally-ignored-directories "vendor")
 
-  ;; Handle remote project separately
+  ;; Remote projects
   (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
-
   (add-to-list 'projectile-known-projects "/ssh:home-worker:/home/ubuntu/")
-
-
   (add-to-list 'projectile-known-projects "/ssh:ben-devbox:/home/ben/lawo-homeapps")
 
   ;; TRAMP-specific caching
@@ -197,10 +272,11 @@
     (when (file-remote-p default-directory)
       (setq-local projectile-enable-caching t)
       (setq-local projectile-require-project-root nil)))
-
   (add-hook 'find-file-hook #'+projectile-enable-remote-caching)
 
-  ;; Run this once at startup to discover local projects
+  ;; Discover projects — these are projects themselves, plus scan ~/code/
+  (projectile-add-known-project "~/org/")
+  (projectile-add-known-project "~/.dotfiles/")
   (projectile-discover-projects-in-search-path))
 
 ;; 2. Tell lsp-mode (if you’re using :tools lsp) not to watch vendor/
@@ -209,7 +285,18 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor$")
 
   ;; optional: disable the watcher‐count warning altogether
-  (setq lsp-file-watch-threshold nil))
+  (setq lsp-file-watch-threshold nil
+        ;; Avoid premature fallback when gopls is busy on large repos.
+        lsp-response-timeout 30)
+  ;; These LSP servers are heavy and duplicate existing Flycheck tooling.
+  ;; Disable them to keep gopls responsive.
+  (add-to-list 'lsp-disabled-clients 'semgrep-ls)
+  (add-to-list 'lsp-disabled-clients 'golangci-lint))
+
+(after! lsp-go
+  ;; Keep gopls from indexing vendor and other large dirs unless you need it.
+  (setq lsp-go-directory-filters
+        ["-vendor" "-.git" "-node_modules" "-.cache" "-dist" "-build"]))
 
 
 (after! eww
@@ -226,39 +313,6 @@
       :sasl-username ,(+pass-get-user "irc/libera.chat")
       :sasl-password ,(+pass-get-secret "irc/libera.chat")
       :channels ("#emacs"))))
-(setq fancy-splash-image (concat doom-user-dir "splash.png"))
-
-(map! :map dap-mode-map
-      :leader
-      :prefix ("d" . "dap")
-      ;; basics
-      :desc "dap next"          "n" #'dap-next
-      :desc "dap step in"       "i" #'dap-step-in
-      :desc "dap step out"      "o" #'dap-step-out
-      :desc "dap continue"      "c" #'dap-continue
-      :desc "dap hydra"         "h" #'dap-hydra
-      :desc "dap debug restart" "r" #'dap-debug-restart
-      :desc "dap debug"         "s" #'dap-debug
-
-      ;; debug
-      :prefix ("dd" . "Debug")
-      :desc "dap debug recent"  "r" #'dap-debug-recent
-      :desc "dap debug last"    "l" #'dap-debug-last
-
-      ;; eval
-      :prefix ("de" . "Eval")
-      :desc "eval"                "e" #'dap-eval
-      :desc "eval region"         "r" #'dap-eval-region
-      :desc "eval thing at point" "s" #'dap-eval-thing-at-point
-      :desc "add expression"      "a" #'dap-ui-expressions-add
-      :desc "remove expression"   "d" #'dap-ui-expressions-remove
-      
-      :prefix ("db" . "Breakpoint")
-      :desc "dap breakpoint toggle"      "b" #'dap-breakpoint-toggle
-      :desc "dap breakpoint condition"   "c" #'dap-breakpoint-condition
-      :desc "dap breakpoint hit count"   "h" #'dap-breakpoint-hit-condition
-      :desc "dap breakpoint log message" "l" #'dap-breakpoint-log-message)
-
 
 ;; minimal working setup
 (use-package! consult-gh
@@ -278,9 +332,18 @@
 ;;   :after (consult-gh embark)
 ;;   :config (consult-gh-embark-mode +1))
 
+;; Forge integration for commenting on issues/PRs
+;; (use-package! consult-gh-forge
+;;   :after (consult-gh forge)
+;;   :config
+;;   (consult-gh-forge-mode +1))
+
+;; code-review: use forge's GitHub token instead of requiring a separate one
+(after! code-review
+  (setq code-review-auth-login-marker 'forge))
+
 ;; atomic-chrome for ghost-text (defer to avoid slowing startup)
 (add-hook 'emacs-startup-hook #'atomic-chrome-start-server)
-
 
 (after! org-jira
   (defun my/org-jira-get-assigned-issues ()
@@ -302,17 +365,17 @@
   (load! "lisp/devspace"))
 (setq display-line-numbers-type 'relative)
 
-(use-package! smudge
-  :bind-keymap ("C-c ." . smudge-command-map)
-  :custom
-  (smudge-player-use-transient-map t)
-  :config
-  (require 'auth-source)
-  (when-let ((auth (car (auth-source-search :host "spotify.com" :max 1))))
-    (setq smudge-oauth2-client-id (plist-get auth :user)
-          smudge-oauth2-client-secret (let ((secret (plist-get auth :secret)))
-                                        (if (functionp secret) (funcall secret) secret))))
-  (global-smudge-remote-mode))
+;; (use-package! smudge
+;;   :bind-keymap ("C-c ." . smudge-command-map)
+;;   :custom
+;;   (smudge-player-use-transient-map t)
+;;   :config
+;;   (require 'auth-source)
+;;   (when-let ((auth (car (auth-source-search :host "spotify.com" :max 1))))
+;;     (setq smudge-oauth2-client-id (plist-get auth :user)
+;;           smudge-oauth2-client-secret (let ((secret (plist-get auth :secret)))
+;;                                         (if (functionp secret) (funcall secret) secret))))
+;;   (global-smudge-remote-mode))
 
 
 (after! mu4e

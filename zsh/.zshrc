@@ -17,19 +17,13 @@ fi
 
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/opt/local/bin:$PATH"
 
+# NVM - lazy loaded for performance
 export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# AsyncAPI CLI Autocomplete
-
-ASYNCAPI_AC_ZSH_SETUP_PATH="$HOME/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup" && test -f "$ASYNCAPI_AC_ZSH_SETUP_PATH" && source "$ASYNCAPI_AC_ZSH_SETUP_PATH"
-autoload -U compinit; compinit
-
-
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/ben/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  alias nvm='unalias nvm node npm; source "$NVM_DIR/nvm.sh"; nvm'
+  alias node='unalias nvm node npm; source "$NVM_DIR/nvm.sh"; node'
+  alias npm='unalias nvm node npm; source "$NVM_DIR/nvm.sh"; npm'
+fi
 
 # opencode
 export PATH=/Users/ben/.opencode/bin:$PATH

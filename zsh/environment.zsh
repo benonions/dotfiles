@@ -23,13 +23,11 @@ export XDG_CONFIG_HOME="$HOME/.config"
 # Go environment
 export GOPATH="$HOME/go"
 export GOROOT=/usr/local/go
-export TERM="screen-256color"
+# Only set TERM inside tmux; let the terminal emulator handle it otherwise
+[[ -n "$TMUX" ]] && export TERM="screen-256color"
 
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
-
-# NVM
-export NVM_DIR="$HOME/.nvm"
 
 # PATH configuration
 typeset -U PATH path
@@ -42,7 +40,6 @@ path=(
   $GOPATH/bin
   $GOROOT/bin
   $HOME/.rd/bin
-  $HOME/development/flutter/bin
   $HOME/.emacs.d/bin
   $HOME/.asdf/shims
   $PNPM_HOME

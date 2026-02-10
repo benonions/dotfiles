@@ -133,8 +133,6 @@
     # Terminal
     "ghostty"
 
-    # Browsers
-    "librewolf"
 
     # Messaging
     "element"

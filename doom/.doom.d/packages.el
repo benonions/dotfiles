@@ -28,6 +28,8 @@
 (package! emacsql-sqlite3)
 
 (package! consult-gh)
+(package! consult-gh-forge)
+(package! code-review)
 (package! protobuf-mode)
 
 (package! eat

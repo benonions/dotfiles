@@ -7,6 +7,9 @@
     helix
     neovim
 
+    # docs
+    tldr
+
     # Development tools
     nixd
     nixfmt
@@ -85,10 +88,14 @@
     # Security
     yubikey-agent
     gitleaks
+    semgrep
 
     # Network tools
     speedtest-cli
     nmap
+
+    # Git hooks
+    # pre-commit  # temporarily disabled - dotnet-sdk-8.0 broken upstream
 
     # Emacs/Doom tooling
     shellcheck
