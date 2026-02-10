@@ -27,3 +27,4 @@ fi
 
 # opencode
 export PATH=/Users/ben/.opencode/bin:$PATH
+export GPG_TTY=$(tty)
