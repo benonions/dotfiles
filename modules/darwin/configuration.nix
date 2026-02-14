@@ -133,7 +133,6 @@
     # Terminal
     "ghostty"
 
-
     # Messaging
     "element"
     "signal"

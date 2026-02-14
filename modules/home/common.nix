@@ -114,6 +114,7 @@
     erlfmt
     rebar3
     plantuml
+    gitleaks
   ];
 
   programs.direnv = {
