@@ -28,3 +28,7 @@ fi
 # opencode
 export PATH=/Users/ben/.opencode/bin:$PATH
 export GPG_TTY=$(tty)
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/ben/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

@@ -57,6 +57,15 @@ if [[ -x "$TPM_DIR/bin/install_plugins" ]]; then
   "$TPM_DIR/bin/install_plugins"
 fi
 
+# Link dotfiles bin scripts into /usr/local/bin
+if [[ -d "$DOTFILES/bin" ]]; then
+  echo "Linking dotfiles bin scripts..."
+  for f in "$DOTFILES/bin/"*; do
+    [[ -f "$f" && -x "$f" ]] || continue
+    ln -sf "$f" "/usr/local/bin/$(basename "$f")"
+  done
+fi
+
 # Install Doom Emacs
 DOOM_DIR="$HOME/.emacs.d"
 if [[ ! -d "$DOOM_DIR" ]]; then

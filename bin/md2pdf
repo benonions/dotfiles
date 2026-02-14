@@ -1,0 +1,81 @@
+#!/bin/sh
+set -euo pipefail
+
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+  echo "usage: md2pdf <input.md|input.org> [output.pdf]" >&2
+  exit 2
+fi
+
+in="$1"
+if [ ! -f "$in" ]; then
+  echo "input not found: $in" >&2
+  exit 1
+fi
+
+case "$in" in
+  *.md|*.markdown|*.org) ;;
+  *)
+    echo "unsupported input (use .md or .org): $in" >&2
+    exit 1
+    ;;
+esac
+
+out="${2:-${in%.*}.pdf}"
+
+# Choose Chrome/Chromium
+if [ -n "${CHROME_BIN:-}" ] && [ -x "$CHROME_BIN" ]; then
+  chrome="$CHROME_BIN"
+elif [ "$(uname -s)" = "Darwin" ] && [ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]; then
+  chrome="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+elif command -v google-chrome >/dev/null 2>&1; then
+  chrome="$(command -v google-chrome)"
+elif command -v chromium >/dev/null 2>&1; then
+  chrome="$(command -v chromium)"
+elif command -v chromium-browser >/dev/null 2>&1; then
+  chrome="$(command -v chromium-browser)"
+else
+  echo "Chrome/Chromium not found. Install one or set CHROME_BIN." >&2
+  exit 1
+fi
+
+filter="$HOME/.dotfiles/scripts/pandoc/mermaid-filter.lua"
+if [ ! -f "$filter" ]; then
+  echo "mermaid filter not found: $filter" >&2
+  exit 1
+fi
+
+tmpdir="$(mktemp -d)"
+cleanup() { rm -rf "$tmpdir"; }
+trap cleanup EXIT
+
+export MERMAID_TMPDIR="$tmpdir"
+export PUPPETEER_EXECUTABLE_PATH="$chrome"
+
+puppeteer_cfg="$tmpdir/puppeteer.json"
+cat >"$puppeteer_cfg" <<EOF
+{
+  "executablePath": "$chrome",
+  "args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+}
+EOF
+export MERMAID_PUPPETEER_CONFIG="$puppeteer_cfg"
+
+html="$tmpdir/out.html"
+
+# Embed resources so Chrome can render without file access issues.
+resource_path="$tmpdir:$(dirname "$in")"
+
+pandoc "$in" \
+  --lua-filter="$filter" \
+  --resource-path="$resource_path" \
+  --embed-resources \
+  --standalone \
+  -o "$html"
+
+"$chrome" \
+  --headless \
+  --disable-gpu \
+  --print-to-pdf="$out" \
+  "$html"
+
+printf "Wrote %s\n" "$out"

@@ -298,6 +298,11 @@
   (setq lsp-go-directory-filters
         ["-vendor" "-.git" "-node_modules" "-.cache" "-dist" "-build"]))
 
+(after! lsp-mode
+  ;; Enable Marksman LSP for Markdown buffers.
+  (add-hook 'markdown-mode-hook #'lsp-deferred)
+  (add-hook 'gfm-mode-hook #'lsp-deferred))
+
 
 (after! eww
   (set-popup-rule! "^\\*eww\\*" :ignore t))

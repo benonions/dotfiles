@@ -9,6 +9,7 @@
 
     # docs
     tldr
+    mermaid-cli
 
     # Development tools
     nixd
@@ -29,6 +30,7 @@
     wget
     age
     mb2md
+    marksman
 
     # Charm.sh tools
     gum
@@ -93,6 +95,7 @@
     # Network tools
     speedtest-cli
     nmap
+    poppler
 
     # Git hooks
     # pre-commit  # temporarily disabled - dotnet-sdk-8.0 broken upstream

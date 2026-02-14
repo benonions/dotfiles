@@ -15,10 +15,16 @@
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, ... }:
     let
       username = "ben";
+      marksmanOverlay = final: prev: {
+        marksman = nixpkgs-unstable.legacyPackages.${final.system}.marksman;
+      };
 
       # Helper to create home-manager config for any system
       mkHomeConfig = { system, extraModules ? [] }: home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ marksmanOverlay ];
+        };
         modules = [
           ./modules/home/common.nix
           {
@@ -41,6 +47,8 @@
           name = username;
           home = "/Users/${username}";
         };
+
+        nixpkgs.overlays = [ marksmanOverlay ];
 
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
