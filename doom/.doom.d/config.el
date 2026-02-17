@@ -4,6 +4,9 @@
 (setq +doom-dashboard-banner-file "splash.png"
       +doom-dashboard-banner-dir doom-user-dir)
 
+;; Use a stable per-user gpg path across hosts.
+(setq epg-gpg-program (expand-file-name "~/.local/bin/gpg"))
+
 (add-to-list 'load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e")
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -244,9 +247,9 @@
               source-inplace)
     :error-parser ben/flycheck-parse-semgrep
     :modes (go-mode go-ts-mode
-            typescript-mode typescript-ts-mode tsx-ts-mode
-            js-mode js2-mode js-ts-mode
-            python-mode python-ts-mode))
+                    typescript-mode typescript-ts-mode tsx-ts-mode
+                    js-mode js2-mode js-ts-mode
+                    python-mode python-ts-mode))
 
   (add-to-list 'flycheck-checkers 'semgrep t)
   ;; Chain after golangci-lint for Go files
@@ -358,6 +361,16 @@
      (list
       (list :filename "assigned-to-me"
             :jql "assignee = currentUser() AND resolution = Unresolved ORDER BY updated DESC"
+            :limit 100))))
+
+
+  (defun my/org-jira-arch-issues ()
+    "Fetch TPS issues that need architecture"
+    (interactive)
+    (org-jira-get-issues-from-custom-jql
+     (list
+      (list :filename "needs-architecture"
+            :jql "project = TPS AND \"Architect needed[Checkbox]\" IS NOT EMPTY AND status != Done"
             :limit 100))))
   )
 

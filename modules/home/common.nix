@@ -1,6 +1,27 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
-{
+let
+  isDarwin = pkgs.stdenv.isDarwin;
+  localBin = "${config.home.homeDirectory}/.local/bin";
+  gpgProgram = "${localBin}/gpg";
+in {
+  # Stable, user-local command path to avoid per-machine binary drift.
+  home.file.".local/bin/gpg".source = if isDarwin then
+    config.lib.file.mkOutOfStoreSymlink "/usr/local/MacGPG2/bin/gpg"
+  else
+    "${pkgs.gnupg}/bin/gpg";
+
+  home.file.".local/bin/gpgconf".source = if isDarwin then
+    config.lib.file.mkOutOfStoreSymlink "/usr/local/MacGPG2/bin/gpgconf"
+  else
+    "${pkgs.gnupg}/bin/gpgconf";
+
+  home.file.".local/bin/gpg-connect-agent".source = if isDarwin then
+    config.lib.file.mkOutOfStoreSymlink
+    "/usr/local/MacGPG2/bin/gpg-connect-agent"
+  else
+    "${pkgs.gnupg}/bin/gpg-connect-agent";
+
   home.packages = with pkgs; [
     # Text editors
     vim
@@ -38,6 +59,7 @@
     skate
     soft-serve
     pandoc
+    w3m-full
 
     # Lua
     luarocks
@@ -122,6 +144,15 @@
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
+
+  # Keep git signing config stable across hosts by using ~/.local/bin/gpg.
+  home.activation.configureGitGpgProgram =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ -x "${gpgProgram}" ]; then
+        $DRY_RUN_CMD ${pkgs.git}/bin/git config --global gpg.program "${gpgProgram}"
+        $DRY_RUN_CMD ${pkgs.git}/bin/git config --global gpg.format openpgp
+      fi
+    '';
 
   programs.home-manager.enable = true;
 }

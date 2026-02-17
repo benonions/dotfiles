@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   # Linux-specific home-manager config
@@ -19,11 +19,4 @@
     pinentry-curses
   ];
 
-  # Set only the Git signing binary, without replacing full ~/.gitconfig.
-  home.activation.configureGitGpgProgram = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ -x ${pkgs.gnupg}/bin/gpg ]; then
-      $DRY_RUN_CMD ${pkgs.git}/bin/git config --global gpg.program ${pkgs.gnupg}/bin/gpg
-      $DRY_RUN_CMD ${pkgs.git}/bin/git config --global gpg.format openpgp
-    fi
-  '';
 }
