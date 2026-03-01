@@ -51,6 +51,12 @@
   (add-to-list 'eglot-server-programs
                '(lua-ts-mode . ("lua-language-server" "--stdio")))
   )
+
+(after! lsp-mode
+  (require 'lsp-lua)
+  (setq lsp-clients-lua-language-server-bin "/opt/homebrew/bin/lua-language-server")
+  (add-to-list 'lsp-language-id-configuration '(lua-ts-mode . "lua"))
+  (add-hook 'lua-ts-mode-hook #'lsp-deferred))
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
