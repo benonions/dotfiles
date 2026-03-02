@@ -269,24 +269,73 @@
         projectile-enable-caching t
         projectile-project-search-path '(("~/code/" . 4)))
 
+  ;; Doom's projectile advice assumes `default-directory` is always a string.
+  ;; In some timer/buffer contexts it can be nil, which crashes `file-remote-p`.
+  (defun ben/projectile-get-ext-command-safe-default-directory-a (orig-fn &rest args)
+    (let ((default-directory
+           (if (stringp default-directory)
+               default-directory
+             (or (and (boundp 'projectile-project-root)
+                      (stringp projectile-project-root)
+                      projectile-project-root)
+                 (expand-file-name "~")))))
+      (apply orig-fn args)))
+  (advice-remove #'projectile-get-ext-command
+                 #'ben/projectile-get-ext-command-safe-default-directory-a)
+  (advice-add #'projectile-get-ext-command :around
+              #'ben/projectile-get-ext-command-safe-default-directory-a)
+
   (add-to-list 'projectile-globally-ignored-directories "vendor")
+
+  ;; Some transient/non-file buffers can have nil `default-directory`.
+  ;; Guard this hook to avoid `file-remote-p` type errors.
+  (defun +projectile-enable-remote-caching ()
+    (when (and (stringp default-directory)
+               (file-remote-p default-directory))
+      (setq-local projectile-enable-caching t)
+      (setq-local projectile-require-project-root nil)))
+  (add-hook 'find-file-hook #'+projectile-enable-remote-caching)
+
+  ;; Keep known projects list clean when cache files contain malformed entries.
+  (setq projectile-known-projects
+        (cl-remove-if-not #'stringp projectile-known-projects))
 
   ;; Remote projects
   (add-to-list 'projectile-known-projects "/ssh:droplet:/root/")
   (add-to-list 'projectile-known-projects "/ssh:home-worker:/home/ubuntu/")
   (add-to-list 'projectile-known-projects "/ssh:ben-devbox:/home/ben/lawo-homeapps")
 
-  ;; TRAMP-specific caching
-  (defun +projectile-enable-remote-caching ()
-    (when (file-remote-p default-directory)
-      (setq-local projectile-enable-caching t)
-      (setq-local projectile-require-project-root nil)))
-  (add-hook 'find-file-hook #'+projectile-enable-remote-caching)
-
   ;; Discover projects — these are projects themselves, plus scan ~/code/
   (projectile-add-known-project "~/org/")
   (projectile-add-known-project "~/.dotfiles/")
   (projectile-discover-projects-in-search-path))
+
+(after! persp-mode
+  ;; Doom's `non-empty` project switch behavior can attempt a rename even when a
+  ;; same-named workspace already exists (e.g. "org"), which raises a persp-mode
+  ;; duplicate-name error. Force the "reuse/switch existing workspace" path.
+  (defun ben/+workspaces-switch-to-project-h-avoid-duplicate-persp (orig-fn &optional dir)
+    (let* ((target-dir (or dir default-directory))
+           (default-directory (if (stringp target-dir) target-dir default-directory))
+           (project-name (and (stringp default-directory) (doom-project-name)))
+           (workspace-exists-p (and (stringp project-name)
+                                    (+workspace-get project-name t))))
+      (if workspace-exists-p
+          (let ((+workspaces-on-switch-project-behavior t))
+            (funcall orig-fn target-dir))
+        (funcall orig-fn target-dir))))
+  (advice-add #'+workspaces-switch-to-project-h :around
+              #'ben/+workspaces-switch-to-project-h-avoid-duplicate-persp))
+
+;; Some packages occasionally call `file-remote-p` with nil in async/timer
+;; contexts (startup restore, project cache init). Treat nil as local.
+(defun ben/file-remote-p-nil-safe-a (orig-fn filename &optional identification connected)
+  (if (null filename)
+      nil
+    (funcall orig-fn filename identification connected)))
+
+(advice-remove #'file-remote-p #'ben/file-remote-p-nil-safe-a)
+(advice-add #'file-remote-p :around #'ben/file-remote-p-nil-safe-a)
 
 ;; 2. Tell lsp-mode (if you’re using :tools lsp) not to watch vendor/
 (after! lsp-mode

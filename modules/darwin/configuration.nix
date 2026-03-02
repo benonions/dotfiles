@@ -111,16 +111,36 @@
     "acli"
     "firefoxpwa"
     "spotify_player"
+    "ast-grep"
+    "buf"
+    "dyff"
+    "hugo"
+    "jd"
+    "lua-language-server"
+    "oasdiff"
+    "grype"
+    "syft"
+
+    # Explicit runtime/libs currently installed
+    "ca-certificates"
+    "libmpc"
+    "mpfr"
+    "openssl@3"
+    "unbound"
 
     # AI tools
     "block-goose-cli"
 
-    # Music 
+    # Music
     "mpd"
   ];
 
-  homebrew.taps =
-    [ "nikitabobko/tap" "d12frosted/emacs-plus" "atlassian/homebrew-acli" ];
+  # Keep Emacs managed by Nix (pkgs.emacs + services.emacs), not Homebrew.
+  homebrew.taps = [
+    "nikitabobko/tap"
+    "atlassian/homebrew-acli"
+    "goreleaser/tap"
+  ];
 
   homebrew.casks = [
     # Window management & productivity
@@ -140,6 +160,7 @@
     # Development
     "flutter"
     "bruno"
+    "goreleaser"
 
     # AI tools
     "claude-code"

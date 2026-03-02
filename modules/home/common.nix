@@ -75,6 +75,7 @@ in {
     zoxide
     fd
     zellij
+    nushell
     eza
     lf
     nnn

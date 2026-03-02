@@ -89,6 +89,16 @@ Configs like nvim, tmux, and zsh use Stow instead of home-manager because:
 3. **Editor tooling** - LSP, linters, and plugins expect standard paths
 4. **Portability** - Works on systems without Nix (quick setup on a remote server)
 
+### Codex config in dotfiles
+
+The `codex/` stow package manages stable Codex settings by linking:
+
+- `codex/.codex/config.toml` -> `~/.codex/config.toml`
+- `codex/.codex/rules/default.rules` -> `~/.codex/rules/default.rules`
+- `codex/.codex/global/anti_corruption.md` -> `~/.codex/global/anti_corruption.md`
+
+Runtime state under `~/.codex` (auth/session/history/sqlite/log/cache files) is intentionally not tracked.
+
 ## What's Included
 
 - **Shell**: zsh + starship prompt
@@ -97,6 +107,7 @@ Configs like nvim, tmux, and zsh use Stow instead of home-manager because:
 - **Multiplexer**: tmux (with TPM)
 - **Window managers**: aerospace (macOS), i3 (Linux)
 - **Dev tools**: lazygit, k9s, fzf, ripgrep, bat, eza, zoxide
+- **AI tooling**: codex (`~/.codex/config.toml`, rules, and global instruction file managed via Stow)
 
 ## Machine Configs
 

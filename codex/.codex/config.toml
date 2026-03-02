@@ -1,0 +1,132 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# Global baseline for Codex; tuned for Ben's lead-architect workflow.
+profile = "ben"
+personality = "pragmatic"
+# Larger project-doc window helps with long-form artifacts and architecture-heavy context.
+project_doc_max_bytes = 262144
+model_instructions_file = "/Users/ben/.codex/global/anti_corruption.md"
+
+# Keep per-repo trust entries out of source control baseline.
+# Codex may append [projects."..."] entries during use.
+
+# ---------------------------------------------------------------------------
+# Profile: ben (default)
+# Purpose: lead-architect baseline for research, artifact production, complex implementation, and rapid POC work.
+# Behavior: pragmatic style, max reasoning, network + live web search, workspace-write sandbox, approval on-request.
+# Use: implicit default, or pass `-p ben`.
+# ---------------------------------------------------------------------------
+[profiles.ben]
+model = "gpt-5.3-codex"
+personality = "pragmatic"
+model_reasoning_effort = "xhigh"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+allow_login_shell = false
+
+[profiles.ben.sandbox_workspace_write]
+network_access = true
+exclude_tmpdir_env_var = false
+exclude_slash_tmp = false
+
+[profiles.ben.features]
+request_rule = true
+shell_snapshot = true
+shell_tool = true
+collaboration_modes = true
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+
+[mcp_servers.mermaid]
+command = "npx"
+args = ["-y", "mcp-mermaid"]
+startup_timeout_sec = 30
+
+# ---------------------------------------------------------------------------
+# Candidate MCP servers (from awesome-mcp-servers) for Ben's workflow.
+# Keep these commented until you want to enable one.
+#
+# Why these:
+# - GitHub MCP (official): SCM context (repos/PRs/issues) for architecture + delivery.
+# - Atlassian MCP: Confluence/Jira artifact flow for planning + delivery tracking.
+# (OpenAI/Codex-first stack; GitHub MCP is official even though the endpoint domain includes "githubcopilot".)
+#
+# [mcp_servers.github]
+# url = "https://api.githubcopilot.com/mcp/"
+# bearer_token_env_var = "GITHUB_TOKEN"
+#
+[mcp_servers.atlassian]
+# Official server: https://github.com/atlassian/atlassian-mcp-server
+url = "https://mcp.atlassian.com/v1/mcp"
+# OAuth-capable HTTP MCP server; complete auth with: codex mcp login atlassian
+# ---------------------------------------------------------------------------
+
+# Keep this profile strict-minimal: only local Ben experimentation skills enabled.
+[[skills.config]]
+path = "/Users/ben/.agents/skills/ben/code-read/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.agents/skills/ben/behavior-preserving-refactor/SKILL.md"
+enabled = true
+
+# Community AsyncAPI skills (vendored locally for auditability)
+# Source repo: https://github.com/melodic-software/claude-code-plugins
+# Pinned commit: e7f64a91cae81597d68d946d0c6e737687693e80 (2026-02-16)
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/asyncapi-design/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/asyncapi-authoring/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/.system/skill-creator/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/.system/skill-installer/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/code-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/go-code-review-notes/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/golang-development-tao/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/golang-development/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/hollywood-project-architecture/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/hollywood-supervision-design/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/hollywood-testkit/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/hollywood-typed-actor-workflow/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/javascript-react-development/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/Users/ben/.codex/skills/php-development/SKILL.md"
+enabled = false

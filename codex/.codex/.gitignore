@@ -1,0 +1,8 @@
+# Keep this package focused on stable Codex config.
+*
+!.gitignore
+!config.toml
+!global/
+!global/anti_corruption.md
+!rules/
+!rules/default.rules
