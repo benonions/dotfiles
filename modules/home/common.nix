@@ -31,6 +31,8 @@ in {
     # docs
     tldr
     mermaid-cli
+    d2
+    gnuplot
 
     # Development tools
     nixd

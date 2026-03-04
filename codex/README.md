@@ -16,6 +16,16 @@ Included profiles:
 - `safe-local`
 - `harness-gate`
 
+## Vendored community skills
+
+This repo also vendors selected community skills under:
+
+- `codex/.codex/skills/community/`
+
+Current sources are documented in:
+
+- `codex/.codex/skills/community/README.md`
+
 ## Intentionally not source-controlled
 
 Runtime and machine-local Codex state should remain outside this repo, including:

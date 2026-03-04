@@ -83,6 +83,53 @@ enabled = true
 path = "/Users/ben/.dotfiles/codex/.codex/skills/community/asyncapi-authoring/SKILL.md"
 enabled = true
 
+# Community Emacs skills (vendored locally for auditability)
+# Source repo: https://github.com/xenodium/emacs-skills
+# Pinned commit: de7adccbc4aef5f4e1e7ebc7a487bdcd7f95509a (2026-03-02)
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/d2/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/describe/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/dired/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/emacsclient/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/file-links/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/gnuplot/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/highlight/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/mermaid/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/open/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/plantuml/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/community/emacs-skills/select/SKILL.md"
+enabled = true
+
 [[skills.config]]
 path = "/Users/ben/.codex/skills/.system/skill-creator/SKILL.md"
 enabled = false

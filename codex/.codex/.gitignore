@@ -6,3 +6,8 @@
 !global/anti_corruption.md
 !rules/
 !rules/default.rules
+!skills/
+!skills/community/
+!skills/community/README.md
+!skills/community/emacs-skills/
+!skills/community/emacs-skills/**

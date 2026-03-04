@@ -8,6 +8,10 @@
 (setq epg-gpg-program (expand-file-name "~/.local/bin/gpg"))
 
 (add-to-list 'load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e")
+;; Keep an Emacs server available for emacsclient-based agent skills.
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
