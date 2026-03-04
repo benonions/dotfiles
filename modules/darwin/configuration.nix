@@ -47,7 +47,10 @@
   };
 
   # Nix settings
-  nix.settings.experimental-features = "nix-command flakes";
+  nix.settings = {
+    experimental-features = "nix-command flakes";
+    trusted-users = [ "root" "ben" ];
+  };
 
   # Shell
   programs.zsh.enable = true;
@@ -136,11 +139,8 @@
   ];
 
   # Keep Emacs managed by Nix (pkgs.emacs + services.emacs), not Homebrew.
-  homebrew.taps = [
-    "nikitabobko/tap"
-    "atlassian/homebrew-acli"
-    "goreleaser/tap"
-  ];
+  homebrew.taps =
+    [ "nikitabobko/tap" "atlassian/homebrew-acli" "goreleaser/tap" ];
 
   homebrew.casks = [
     # Window management & productivity

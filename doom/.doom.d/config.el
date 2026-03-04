@@ -38,9 +38,19 @@
     (setq exec-path (append (parse-colon-path shell-path) (list exec-directory))))
 
   ;; nix-darwin's /etc/zshenv hard-resets PATH for every zsh subprocess,
-  ;; clobbering whatever Emacs sets. Use /bin/sh for compilation and shell
-  ;; commands so they inherit Emacs's PATH directly.
+  ;; clobbering whatever Emacs sets. Keep non-interactive Emacs shell usage
+  ;; on /bin/sh so commands inherit Emacs's PATH directly.
   (setq shell-file-name "/bin/sh")
+
+  ;; Keep interactive terminals aligned with your login shell (~/.zshrc,
+  ;; aliases, etc.) while preserving /bin/sh for internal command execution.
+  (let ((user-shell (or (getenv "SHELL") "/bin/zsh")))
+    (setq explicit-shell-file-name user-shell)
+    (when (string-match-p "zsh\\'" user-shell)
+      (setq explicit-zsh-args '("-i"))))
+
+  (after! vterm
+    (setq vterm-shell (or (getenv "SHELL") "/bin/zsh")))
 
   ;; Force use of Homebrew pkg-config
   (setenv "PKG_CONFIG" "/opt/homebrew/bin/pkg-config")
