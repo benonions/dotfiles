@@ -96,6 +96,7 @@ in {
     kubectl
     krew
     doctl
+    google-cloud-sdk
     argocd
     argocd-vault-plugin
     docker
