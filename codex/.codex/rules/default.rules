@@ -171,3 +171,8 @@ prefix_rule(pattern=["/bin/zsh", "-lc", "git -C ui fetch --all --tags --prune &&
 prefix_rule(pattern=["git", "-C", "ui", "checkout", "456f028"], decision="allow")
 prefix_rule(pattern=["git", "add", "ui"], decision="allow")
 prefix_rule(pattern=["git", "add", "README.md", "cmd/ttnm-manager/doc.go", "internal/supervisor/store/sqlite/doc.go"], decision="allow")
+prefix_rule(pattern=["rm", "-f", "README.tmp.md", "docs/best-practices.html", ".DS_Store"], decision="allow")
+prefix_rule(pattern=["rm", "-rf", "docs/decisions", "docs/specs"], decision="allow")
+prefix_rule(pattern=["/bin/zsh", "-lc", "nix eval --json .#homeConfigurations.ben.options.launchd >/tmp/launchd_opts.json && echo ok"], decision="allow")
+prefix_rule(pattern=["nix", "eval", ".#homeConfigurations.ben.activationPackage.drvPath"], decision="allow")
+prefix_rule(pattern=["/bin/zsh", "-lc", "NIXPKGS_ALLOW_UNFREE=1 nix eval --impure .#homeConfigurations.ben.activationPackage.drvPath && NIXPKGS_ALLOW_UNFREE=1 nix eval --impure .#darwinConfigurations.Benjamins-MacBook-Pro-2.system.drvPath"], decision="allow")

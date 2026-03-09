@@ -2,9 +2,18 @@
 
 let
   isDarwin = pkgs.stdenv.isDarwin;
-  localBin = "${config.home.homeDirectory}/.local/bin";
+  isLinux = pkgs.stdenv.isLinux;
+  homeDir = config.home.homeDirectory;
+  localBin = "${homeDir}/.local/bin";
   gpgProgram = "${localBin}/gpg";
-in {
+  dotfilesDir = "${homeDir}/.dotfiles";
+  orgDir = "${homeDir}/org";
+  codexPath =
+    "$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
+  runJiraIntake = "${dotfilesDir}/scripts/run-jira-intake.sh";
+  runFanin = "${dotfilesDir}/scripts/run-fanin.sh";
+in lib.mkMerge [
+  {
   # Stable, user-local command path to avoid per-machine binary drift.
   home.file.".local/bin/gpg".source = if isDarwin then
     config.lib.file.mkOutOfStoreSymlink "/usr/local/MacGPG2/bin/gpg"
@@ -158,4 +167,135 @@ in {
     '';
 
   programs.home-manager.enable = true;
-}
+  }
+
+  (lib.mkIf isLinux {
+    # Cron-like schedules on Linux via systemd user timers.
+    systemd.user.services.codex-jira-intake = {
+      Unit.Description = "Run Codex Jira intake";
+      Service = {
+        Type = "oneshot";
+        WorkingDirectory = dotfilesDir;
+        ExecStart = runJiraIntake;
+        Environment = [
+          "HOME=${homeDir}"
+          "PATH=${codexPath}"
+          "ORG_DIR=${orgDir}"
+        ];
+      };
+    };
+
+    systemd.user.timers.codex-jira-intake = {
+      Unit.Description = "Schedule Codex Jira intake";
+      Timer = {
+        OnCalendar = "Mon..Fri *:0/30:00";
+        Persistent = true;
+        Unit = "codex-jira-intake.service";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
+
+    systemd.user.services.codex-fanin = {
+      Unit.Description = "Run Codex fan-in";
+      Service = {
+        Type = "oneshot";
+        WorkingDirectory = dotfilesDir;
+        ExecStart = runFanin;
+        Environment = [
+          "HOME=${homeDir}"
+          "PATH=${codexPath}"
+          "ORG_DIR=${orgDir}"
+        ];
+      };
+    };
+
+    systemd.user.timers.codex-fanin = {
+      Unit.Description = "Schedule Codex fan-in";
+      Timer = {
+        OnCalendar = "*-*-* *:0/15:00";
+        Persistent = true;
+        Unit = "codex-fanin.service";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
+  })
+
+  (lib.mkIf isDarwin {
+    # Cron-like schedules on macOS via launchd user agents.
+    launchd.agents.codex-jira-intake = {
+      enable = true;
+      config = {
+        ProcessType = "Background";
+        ProgramArguments = [ runJiraIntake ];
+        WorkingDirectory = dotfilesDir;
+        EnvironmentVariables = {
+          HOME = homeDir;
+          PATH = codexPath;
+          ORG_DIR = orgDir;
+        };
+        StartCalendarInterval = [
+          {
+            Weekday = 1;
+            Minute = 0;
+          }
+          {
+            Weekday = 2;
+            Minute = 0;
+          }
+          {
+            Weekday = 3;
+            Minute = 0;
+          }
+          {
+            Weekday = 4;
+            Minute = 0;
+          }
+          {
+            Weekday = 5;
+            Minute = 0;
+          }
+          {
+            Weekday = 1;
+            Minute = 30;
+          }
+          {
+            Weekday = 2;
+            Minute = 30;
+          }
+          {
+            Weekday = 3;
+            Minute = 30;
+          }
+          {
+            Weekday = 4;
+            Minute = 30;
+          }
+          {
+            Weekday = 5;
+            Minute = 30;
+          }
+        ];
+        StandardOutPath = "${homeDir}/Library/Logs/codex-jira-intake.log";
+        StandardErrorPath = "${homeDir}/Library/Logs/codex-jira-intake.log";
+      };
+    };
+
+    launchd.agents.codex-fanin = {
+      enable = true;
+      config = {
+        ProcessType = "Background";
+        ProgramArguments = [ runFanin ];
+        WorkingDirectory = dotfilesDir;
+        EnvironmentVariables = {
+          HOME = homeDir;
+          PATH = codexPath;
+          ORG_DIR = orgDir;
+        };
+        StartInterval = 900;
+        RunAtLoad = true;
+        StandardOutPath = "${homeDir}/Library/Logs/codex-fanin.log";
+        StandardErrorPath = "${homeDir}/Library/Logs/codex-fanin.log";
+      };
+    };
+  })
+]
