@@ -27,7 +27,7 @@ in {
     vim
     helix
     neovim
-
+    entr
     # docs
     tldr
     mermaid-cli

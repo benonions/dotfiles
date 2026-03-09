@@ -72,6 +72,10 @@ enabled = true
 path = "/Users/ben/.agents/skills/ben/behavior-preserving-refactor/SKILL.md"
 enabled = true
 
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/ben/org-org-roam/SKILL.md"
+enabled = true
+
 # Community AsyncAPI skills (vendored locally for auditability)
 # Source repo: https://github.com/melodic-software/claude-code-plugins
 # Pinned commit: e7f64a91cae81597d68d946d0c6e737687693e80 (2026-02-16)
@@ -177,3 +181,23 @@ enabled = false
 [[skills.config]]
 path = "/Users/ben/.codex/skills/php-development/SKILL.md"
 enabled = false
+
+[tui]
+status_line = ["model-with-reasoning", "context-remaining", "current-dir", "model-name", "project-root", "git-branch", "session-id"]
+
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.3-codex"
+
+# TFC chief-of-staff intake skills
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/tfc-atlassian-chief-of-staff/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/tfc-slack-chief-of-staff/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/Users/ben/.dotfiles/codex/.codex/skills/tfc-org-fanin/SKILL.md"
+enabled = true
