@@ -18,12 +18,26 @@
       marksmanOverlay = final: prev: {
         marksman = nixpkgs-unstable.legacyPackages.${final.system}.marksman;
       };
+      hkOverlay = final: prev:
+        let
+          unstablePkgs = nixpkgs-unstable.legacyPackages.${final.system};
+        in
+        {
+          hk = final.callPackage ./pkgs/hk.nix {
+            rustPlatform = unstablePkgs.rustPlatform;
+            zlibCompat =
+              if builtins.hasAttr "zlib-ng-compat" final
+              then final."zlib-ng-compat"
+              else null;
+          };
+        };
+      overlays = [ marksmanOverlay hkOverlay ];
 
       # Helper to create home-manager config for any system
       mkHomeConfig = { system, extraModules ? [] }: home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ marksmanOverlay ];
+          inherit overlays;
         };
         modules = [
           ./modules/home/common.nix
@@ -48,7 +62,7 @@
           home = "/Users/${username}";
         };
 
-        nixpkgs.overlays = [ marksmanOverlay ];
+        nixpkgs.overlays = overlays;
 
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
