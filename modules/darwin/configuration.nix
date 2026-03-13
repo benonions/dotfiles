@@ -166,6 +166,9 @@
     "claude-code"
     "codex"
 
+    # Networking
+    "tailscale-app"
+
     # Security
     "1password-cli"
   ];

@@ -2,7 +2,7 @@
 
 # Single compinit with daily cache refresh
 autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+if [[ -n ~/.zcompdump(#qN.mh+24) ]] || [[ ! -f ~/.zcompdump ]]; then
   compinit
 else
   compinit -C  # skip security check, use cache
@@ -24,6 +24,17 @@ if command -v kubectl &>/dev/null; then
     kubectl completion zsh > "$kubectl_comp" 2>/dev/null
   fi
   [[ -f "$kubectl_comp" ]] && source "$kubectl_comp"
+fi
+
+# Cache tailscale completions (regenerate with: rm ~/.zsh/cache/tailscale-completion.zsh)
+if command -v tailscale &>/dev/null; then
+  local tailscale_comp="$HOME/.zsh/cache/tailscale-completion.zsh"
+  if [[ ! -f "$tailscale_comp" ]]; then
+    mkdir -p "$HOME/.zsh/cache"
+    tailscale completion zsh > "$tailscale_comp" 2>/dev/null
+  fi
+  [[ -f "$tailscale_comp" ]] && source "$tailscale_comp"
+
 fi
 
 # Google Cloud SDK completions

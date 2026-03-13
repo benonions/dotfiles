@@ -41,7 +41,7 @@ path=(
   $GOROOT/bin
   $HOME/.rd/bin
   $HOME/.emacs.d/bin
-  $HOME/.asdf/shims
+
   $PNPM_HOME
   $path
 )

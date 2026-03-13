@@ -5,11 +5,11 @@
 
 # General aliases
 # Use eza if available, otherwise fall back to ls
-if command -v eza &> /dev/null; then
-  alias ls="eza"
+if command -v eza &>/dev/null; then
+    alias ls="eza"
 fi
 
-alias killtmux="tmux kill-session -t \$(tmux list-sessions -F '#S' | fzf)"  
+alias killtmux="tmux kill-session -t \$(tmux list-sessions -F '#S' | fzf)"
 alias glp='git log --pretty=format:"%h - %cn, %cr : %s"'
 alias pip="pip3"
 alias zsrc="source ~/.zshrc"
@@ -33,36 +33,36 @@ alias get-deployment='mkdir -p deploy && kubectl get $(kubectl get deployments -
 
 # Nix
 nrs() {
-  if [[ "$OSTYPE" == darwin* ]]; then
-    sudo darwin-rebuild switch --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
-  elif [[ -f /etc/NIXOS ]]; then
-    sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"
-  else
-    home-manager switch --flake ~/.dotfiles#"$USER"
-  fi
+    if [[ "$OSTYPE" == darwin* ]]; then
+        sudo darwin-rebuild switch --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+    elif [[ -f /etc/NIXOS ]]; then
+        sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"
+    else
+        home-manager switch --flake ~/.dotfiles#"$USER"
+    fi
 }
 
 nrb() {
-  if [[ "$OSTYPE" == darwin* ]]; then
-    darwin-rebuild build --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
-  elif [[ -f /etc/NIXOS ]]; then
-    nixos-rebuild build --flake ~/.dotfiles#"$(hostname -s)"
-  else
-    home-manager build --flake ~/.dotfiles#"$USER"
-  fi
+    if [[ "$OSTYPE" == darwin* ]]; then
+        darwin-rebuild build --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+    elif [[ -f /etc/NIXOS ]]; then
+        nixos-rebuild build --flake ~/.dotfiles#"$(hostname -s)"
+    else
+        home-manager build --flake ~/.dotfiles#"$USER"
+    fi
 }
 
 nrt() {
-  if [[ "$OSTYPE" == darwin* ]]; then
-    sudo darwin-rebuild check --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
-  elif [[ -f /etc/NIXOS ]]; then
-    sudo nixos-rebuild dry-activate --flake ~/.dotfiles#"$(hostname -s)"
-  else
-    home-manager build --flake ~/.dotfiles#"$USER" --dry-run
-  fi
+    if [[ "$OSTYPE" == darwin* ]]; then
+        sudo darwin-rebuild check --flake ~/.dotfiles#"$(scutil --get LocalHostName)"
+    elif [[ -f /etc/NIXOS ]]; then
+        sudo nixos-rebuild dry-activate --flake ~/.dotfiles#"$(hostname -s)"
+    else
+        home-manager build --flake ~/.dotfiles#"$USER" --dry-run
+    fi
 }
 
-#read local http 
+#read local http
 alias reader="python3 -m http.server 8086"
 
 # Zellij
