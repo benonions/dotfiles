@@ -445,8 +445,38 @@
 
 ;; refresh buffer if file changes on disk (i.e. if I edit it outside emacs)
 (global-auto-revert-mode 1)
-(setq elfeed-feeds      '("https://this-week-in-rust.org/rss.xml"
-                          ))
+(after! elfeed-goodies
+  (setq elfeed-goodies/feed-source-column-width 20))
+
+;; Fetch and render linked article content for aggregator feeds (HN, Lobsters)
+;; whose RSS entries contain only a comments link.
+(after! elfeed
+  (defun ben/elfeed-show-fetch-article ()
+    "For aggregator entries, fetch the linked article and render it inline."
+    (run-at-time 0.1 nil
+      (lambda ()
+        (when-let ((buf (get-buffer "*elfeed-entry*")))
+          (with-current-buffer buf
+            (when (and (boundp 'elfeed-show-entry) elfeed-show-entry
+                       (member 'aggregator (elfeed-entry-tags elfeed-show-entry)))
+              (let* ((url (elfeed-entry-link elfeed-show-entry))
+                     (fetched (url-retrieve-synchronously url t nil 10)))
+                (when fetched
+                  (let (html)
+                    (with-current-buffer fetched
+                      (goto-char (point-min))
+                      (re-search-forward "\r?\n\r?\n" nil t)
+                      (setq html (buffer-substring-no-properties (point) (point-max)))
+                      (kill-buffer))
+                    (let ((inhibit-read-only t))
+                      (goto-char (point-max))
+                      (insert "\n\n--- Article Content ---\n\n")
+                      (shr-insert-document
+                       (with-temp-buffer
+                         (insert html)
+                         (libxml-parse-html-region (point-min) (point-max))))))))))))))
+
+  (add-hook 'elfeed-show-mode-hook #'ben/elfeed-show-fetch-article))
 (load-file "~/.doom.d/lisp/launcher.el")
 (after! transient
   (load! "lisp/devspace"))
@@ -519,3 +549,10 @@
          :description (format "Slack: #%s - %s" room-name desc)))))
 
   (org-link-set-parameters "slack" :store #'my/slack-store-link))
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode))
+(use-package! calibredb
+  :commands calibredb
+  :config
+  (setq calibredb-root-dir "~/Calibre Library"
+        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)))
