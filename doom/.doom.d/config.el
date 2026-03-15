@@ -556,3 +556,24 @@
   :config
   (setq calibredb-root-dir "~/Calibre Library"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)))
+
+;; ai-code-interface: unified AI coding assistant via vterm
+(use-package! ai-code
+  :commands (ai-code-menu)
+  :init
+  (global-set-key (kbd "C-c a") #'ai-code-menu)
+  :config
+  ;; Backend: claude-code on BlackBook, codex elsewhere
+  (setq ai-code-backend
+        (if (string= (system-name) "Bens-BlackBook-Pro.local")
+            'claude-code
+          'codex))
+  ;; Use vterm as terminal backend
+  (setq ai-code-terminal-backend 'vterm)
+  ;; Auto-revert so external edits appear immediately
+  (setq auto-revert-interval 1)
+  (global-auto-revert-mode 1)
+  ;; Magit integration
+  (with-eval-after-load 'magit
+    (when (fboundp 'ai-code-magit-setup)
+      (ai-code-magit-setup))))
